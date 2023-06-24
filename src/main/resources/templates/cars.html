@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Car</title>
+    <style>
+        table,
+        td {
+            border: 1px solid #333;
+            margin-top: 200px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 25px;
+        }
+
+        .table {
+            width: 100%;
+            border: none;
+            margin-bottom: 20px;
+        }
+
+        .table thead th {
+            font-weight: bold;
+            text-align: left;
+            border: none;
+            padding: 10px 15px;
+            background: #3095e8;
+            font-size: 14px;
+        }
+
+        .table thead tr th:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .table thead tr th:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .table tbody td {
+            text-align: left;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            vertical-align: top;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: #f3f3f3;
+        }
+
+        .table tbody tr td:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .table tbody tr td:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        thead,
+        tfoot {
+            background-color: dodgerblue;
+            color: #fff;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-size: 20px;
+        }
+
+        input[type="file"],
+        input[type="number"],
+        input[type="text"],
+        textarea {
+            border: 1px solid black;
+            padding: 3px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            display: block;
+            margin-top: 10px;
+            font-size: 20px;
+            height: 40px;
+            width: 80px;
+            border: none;
+            background-color: #43acbe;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body bgcolor="DEDEDEFF">
+<button type="button" th:href="@{/}"><a th:href="@{/}">Main</a></button>
+<button style="margin-left: 1px; margin-top: 1px" type="button" class="btn btn-outline-success"
+        th:href="@{/}"><a th:href="@{/teachers}">Teachers</a></button>
+<table class="table">
+    <form action="api/cars/car/create" method="post" enctype="multipart/form-data">
+        <tbody class="table-success">
+        <tr>
+            <td>
+                <label for="file1">File 1:</label>
+                <input type="file" name="file1" id="file1">
+            </td>
+            <td>
+                <label for="file2">File 2:</label>
+                <input type="file" name="file2" id="file2">
+            </td>
+            <td>
+                <label for="file3">File 3:</label>
+                <input type="file" name="file3" id="file3">
+            </td>
+            <td>
+                <label for="file4">File 4:</label>
+                <input type="file" name="file4" id="file4">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="YearOfIssue">Year of Issue:</label>
+                <input type="number" name="YearOfIssue" id="YearOfIssue">
+            </td>
+            <td>
+                <label for="mileage">Mileage:</label>
+                <input type="text" name="mileage" id="mileage">
+            </td>
+            <td>
+                <label for="body">Body:</label>
+                <input type="text" name="body" id="body">
+            </td>
+            <td>
+                <label for="color">Color:</label>
+                <input type="text" name="color" id="color">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="engine">Engine:</label>
+                <input type="text" name="engine" id="engine">
+            </td>
+            <td>
+                <label for="transmission">Transmission:</label>
+                <input type="text" name="transmission" id="transmission">
+            </td>
+            <td>
+                <label for="driveUnit">Drive Unit:</label>
+                <input type="text" name="driveUnit" id="driveUnit">
+            </td>
+            <td>
+                <label for="steeringWheel">Steering Wheel:</label>
+                <input type="text" name="steeringWheel" id="steeringWheel">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="condition">Condition:</label>
+                <input type="text" name="condition" id="condition">
+            </td>
+            <td>
+                <label for="customs">Customs:</label>
+                <input type="text" name="customs" id="customs">
+            </td>
+            <td>
+                <label for="exchange">Exchange:</label>
+                <input type="text" name="exchange" id="exchange">
+            </td>
+            <td>
+                <label for="availability">Availability:</label>
+                <input type="text" name="availability" id="availability">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="regionCityOfSale">Region/City of Sale:</label>
+                <input type="text" name="regionCityOfSale" id="regionCityOfSale">
+            </td>
+            <td>
+                <label for="accounting">Accounting:</label>
+                <input type="text" name="accounting" id="accounting">
+            </td>
+            <td>
+                <label for="description">Description:</label>
+                <textarea name="description" id="description"></textarea>
+            </td>
+            <td>
+                <label for="brand">Brand:</label>
+                <input type="text" name="brand" id="brand">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="model">Model:</label>
+                <input type="text" name="model" id="model">
+            </td>
+            <td>
+                <label for="price">Price:</label>
+                <input type="number" name="price" id="price">
+            </td>
+            <td colspan="2">
+                <button type="submit">Submit</button>
+            </td>
+        </tr>
+        </tbody>
+    </form>
+</table>
+</body>
+</html>
