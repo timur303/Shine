@@ -55,7 +55,7 @@ public class AuthController {
             Authentication authentication = null;
 
             if (request.getEmail() != null) {
-                //  using email
+                // using email
                 authentication = authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
                 );
@@ -70,15 +70,25 @@ public class AuthController {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 String token = jwtTokenUtil.generateToken(userDetails);
                 User user = userRepository.findByEmail(userDetails.getUsername()).get();
-                return ResponseEntity.ok().body(loginMapper.loginView(token, ValidationType.SUCCESSFUL, user));
+
+                // Set the values in LoginResponse
+                LoginResponse loginResponse = loginMapper.loginView(token, ValidationType.SUCCESSFUL, user);
+                loginResponse.setJwtToken(token);
+                loginResponse.setMessage("Login successful");
+                loginResponse.setAuthorities(userDetails.getAuthorities().toString());
+
+                return ResponseEntity.ok().body(loginResponse);
             } else {
                 // Authentication failed
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(loginMapper.loginView("", ValidationType.LOGIN_FAILED, null));
+                LoginResponse loginResponse = loginMapper.loginView("", ValidationType.LOGIN_FAILED, null);
+                loginResponse.setMessage("Invalid username or password");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(loginResponse);
             }
         } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(loginMapper.loginView("", ValidationType.LOGIN_FAILED, null));
+            // Authentication failed
+            LoginResponse loginResponse = loginMapper.loginView("", ValidationType.LOGIN_FAILED, null);
+            loginResponse.setMessage("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(loginResponse);
         }
     }
 
@@ -90,7 +100,7 @@ public class AuthController {
     })
 
     @PostMapping("/registration")
-    public UserResponse create(@RequestBody UserRequest userRequest) {
+    public UserResponse registration(@RequestBody UserRequest userRequest) {
         return userService.register(userRequest);
     }
 
