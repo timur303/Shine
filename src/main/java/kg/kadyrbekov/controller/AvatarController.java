@@ -41,7 +41,7 @@ public class AvatarController {
     @ApiOperation("Update an existing avatar image for a specific user")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Avatar updated successfully"),
-            @ApiResponse(code = 404, message = "Avatar not found")
+            @ApiResponse(code = 404, message = "Avatar not found"),
     })
     @PatchMapping("/updateAvatar/{avatarId}")
     public ResponseEntity<String> updateAvatar(@PathVariable Long avatarId, @RequestPart("file") MultipartFile file) {
@@ -58,8 +58,6 @@ public class AvatarController {
             @ApiResponse(code = 200, message = "Avatar deleted successfully"),
             @ApiResponse(code = 404, message = "Avatar not found")
     })
-
-
     @DeleteMapping("/deleteAvatar/{avatarID}")
     public ResponseEntity<String> deleteAvatar(@PathVariable Long avatarID) {
         try {

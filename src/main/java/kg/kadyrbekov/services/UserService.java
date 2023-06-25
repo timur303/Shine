@@ -3,6 +3,7 @@ package kg.kadyrbekov.services;
 import kg.kadyrbekov.dto.UserRequest;
 import kg.kadyrbekov.dto.UserResponse;
 import kg.kadyrbekov.exception.NotFoundException;
+import kg.kadyrbekov.exception.UserRegistrationException;
 import kg.kadyrbekov.model.User;
 import kg.kadyrbekov.model.entity.Cars;
 import kg.kadyrbekov.model.enums.Role;
@@ -41,6 +42,17 @@ public class UserService {
 
 
     public User mapToEntity(UserRequest request) {
+
+        Optional<User> existingUserByEmail = userRepository.findByEmail(request.getEmail());
+        if (existingUserByEmail.isPresent()) {
+            throw new UserRegistrationException("User with this email already exists.");
+        }
+
+        Optional<User> existingUserByPhoneNumber = userRepository.findByPhoneNumber(request.getPhoneNumber());
+        if (existingUserByPhoneNumber.isPresent()) {
+            throw new UserRegistrationException("User with this phone number already exists.");
+        }
+
         String email = request.getEmail();
 
         User user = new User();

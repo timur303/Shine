@@ -8,6 +8,8 @@ import kg.kadyrbekov.dto.AuthResponse;
 import kg.kadyrbekov.dto.LoginRequest;
 import kg.kadyrbekov.dto.UserRequest;
 import kg.kadyrbekov.dto.UserResponse;
+import kg.kadyrbekov.exception.ErrorResponse;
+import kg.kadyrbekov.exception.UserRegistrationException;
 import kg.kadyrbekov.mapper.LoginMapper;
 import kg.kadyrbekov.mapper.LoginResponse;
 import kg.kadyrbekov.mapper.ValidationType;
@@ -100,8 +102,14 @@ public class AuthController {
     })
 
     @PostMapping("/registration")
-    public UserResponse registration(@RequestBody UserRequest userRequest) {
-        return userService.register(userRequest);
+    public ResponseEntity<?> registerUser(@RequestBody UserRequest userRequest) {
+        try {
+            UserResponse response = userService.register(userRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (UserRegistrationException e) {
+            String errorMessage = "Email phone number already exists";
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
+        }
     }
 
     @PatchMapping("/updateUser")
