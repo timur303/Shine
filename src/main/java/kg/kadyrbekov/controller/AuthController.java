@@ -104,13 +104,26 @@ public class AuthController {
     @PostMapping("/registration")
     public ResponseEntity<?> registerUser(@RequestBody UserRequest userRequest) {
         try {
+
+            if (userRepository.findByEmail(userRequest.getEmail()).isPresent()) {
+                String errorMessage = "Email already exists";
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
+            }
+
+            if (userRepository.findByPhoneNumber(userRequest.getPhoneNumber()).isPresent()) {
+                String errorMessage = "Phone number already exists";
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
+            }
+
+
             UserResponse response = userService.register(userRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (UserRegistrationException e) {
-            String errorMessage = "Email phone number already exists";
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
+            String errorMessage = "User registration failed";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         }
     }
+
 
     @PatchMapping("/updateUser")
     public UserResponse update(@RequestBody UserRequest request) {
