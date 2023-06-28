@@ -1,5 +1,6 @@
 package kg.kadyrbekov.services;
 
+import kg.kadyrbekov.config.jwt.JwtTokenUtil;
 import kg.kadyrbekov.dto.UserRequest;
 import kg.kadyrbekov.dto.UserResponse;
 import kg.kadyrbekov.exception.NotFoundException;
@@ -25,16 +26,71 @@ public class UserService {
 
     private final PasswordEncoder encoder;
 
+    private final JwtTokenUtil jwtTokenUtil;
+
     private final CarsRepository carsRepository;
 
+
     public UserResponse register(UserRequest userRequest) {
-        User user1 = new User();
-        userRepository.findByEmail(user1.getEmail());
-        User user = mapToEntity(userRequest);
+        String email = userRequest.getEmail();
+
+        Optional<User> existingUserByEmail = userRepository.findByEmail(email);
+        if (existingUserByEmail.isPresent()) {
+            throw new UserRegistrationException("User with this email already exists.");
+        }
+
+        Optional<User> existingUserByPhoneNumber = userRepository.findByPhoneNumber(userRequest.getPhoneNumber());
+        if (existingUserByPhoneNumber.isPresent()) {
+            throw new UserRegistrationException("User with this phone number already exists.");
+        }
+
+        User user = new User();
+        user.setFirstName(userRequest.getFirstName());
+        user.setLastName(userRequest.getLastName());
+        user.setEmail(email);
+        user.setAge(userRequest.getAge());
         user.setPassword(encoder.encode(userRequest.getPassword()));
+        user.setPhoneNumber(userRequest.getPhoneNumber());
+
+        if (email.equals("beka@gmail.com")) {
+            if (isAdminAlreadyLoggedIn()) {
+                throw new RuntimeException("Admin is already logged in");
+            } else {
+                user.setRole(Role.ADMIN);
+                setAdminLoggedIn(true);
+            }
+        } else {
+            user.setRole(Role.USER);
+        }
+
         userRepository.save(user);
+
         return mapToResponse(user);
     }
+
+    private UserResponse mapToResponse(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+//                .role(user.getRole())
+//                .firstName(user.getFirstName())
+//                .lastName(user.getLastName())
+//                .phoneNumber(user.getPhoneNumber())
+//                .age(user.getAge())
+//                .email(user.getEmail())
+//                .password(user.getPassword())
+                .token(jwtTokenUtil.generateToken(user))
+                .build();
+    }
+
+
+//    public UserResponse register(UserRequest userRequest) {
+//        User user1 = new User();
+//        userRepository.findByEmail(user1.getEmail());
+//        User user = mapToEntity(userRequest);
+//        user.setPassword(encoder.encode(userRequest.getPassword()));
+//        userRepository.save(user);
+//        return mapToResponse(user);
+//    }
 
     public User findByIDUser(Long id) throws NotFoundException {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id not found" + id));
@@ -141,16 +197,16 @@ public class UserService {
     }
 
 
-    public UserResponse mapToResponse(User user) {
-        return UserResponse.builder()
-                .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .phoneNumber(user.getPhoneNumber())
-                .age(user.getAge())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .build();
-    }
+//    public UserResponse mapToResponses(User user) {
+//        return UserResponse.builder()
+//                .id(user.getId())
+//                .firstName(user.getFirstName())
+//                .lastName(user.getLastName())
+//                .phoneNumber(user.getPhoneNumber())
+//                .age(user.getAge())
+//                .email(user.getEmail())
+//                .password(user.getPassword())
+//                .build();
+//    }
 
 }

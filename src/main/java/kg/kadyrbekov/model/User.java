@@ -54,6 +54,7 @@ public class User implements UserDetails {
 
     private boolean blocked;
 
+
     @OneToMany(mappedBy = "user")
     private List<Review> reviews;
 

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -62,12 +61,12 @@ public class AdminService {
 
         return UserResponse.builder()
                 .id(savedUser.getId())
-                .firstName(savedUser.getFirstName())
-                .lastName(savedUser.getLastName())
-                .phoneNumber(savedUser.getPhoneNumber())
-                .email(savedUser.getEmail())
-                .password(savedUser.getPassword())
-                .age(savedUser.getAge())
+//                .firstName(savedUser.getFirstName())
+//                .lastName(savedUser.getLastName())
+//                .phoneNumber(savedUser.getPhoneNumber())
+//                .email(savedUser.getEmail())
+//                .password(savedUser.getPassword())
+//                .age(savedUser.getAge())
                 .build();
     }
 

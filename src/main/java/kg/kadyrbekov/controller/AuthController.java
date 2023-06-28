@@ -8,7 +8,6 @@ import kg.kadyrbekov.dto.AuthResponse;
 import kg.kadyrbekov.dto.LoginRequest;
 import kg.kadyrbekov.dto.UserRequest;
 import kg.kadyrbekov.dto.UserResponse;
-import kg.kadyrbekov.exception.ErrorResponse;
 import kg.kadyrbekov.exception.UserRegistrationException;
 import kg.kadyrbekov.mapper.LoginMapper;
 import kg.kadyrbekov.mapper.LoginResponse;
@@ -73,11 +72,10 @@ public class AuthController {
                 String token = jwtTokenUtil.generateToken(userDetails);
                 User user = userRepository.findByEmail(userDetails.getUsername()).get();
 
-                // Set the values in LoginResponse
                 LoginResponse loginResponse = loginMapper.loginView(token, ValidationType.SUCCESSFUL, user);
                 loginResponse.setJwtToken(token);
                 loginResponse.setMessage("Login successful");
-                loginResponse.setAuthorities(userDetails.getAuthorities().toString());
+                loginResponse.setUserId(user.getId());
 
                 return ResponseEntity.ok().body(loginResponse);
             } else {
@@ -100,26 +98,26 @@ public class AuthController {
             @ApiResponse(code = 200, message = "User registered successfully"),
             @ApiResponse(code = 400, message = "Invalid user data")
     })
-
     @PostMapping("/registration")
-    public ResponseEntity<?> registerUser(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<UserResponse> registerUser(@RequestBody UserRequest userRequest) {
         try {
-
             if (userRepository.findByEmail(userRequest.getEmail()).isPresent()) {
-                String errorMessage = "Email already exists";
+                UserResponse errorMessage = new UserResponse();
+                errorMessage.setErrorMessage("Email already exists");
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
             }
 
             if (userRepository.findByPhoneNumber(userRequest.getPhoneNumber()).isPresent()) {
-                String errorMessage = "Phone number already exists";
+                UserResponse errorMessage = new UserResponse();
+                errorMessage.setErrorMessage("Phone number already exists");
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
             }
-
 
             UserResponse response = userService.register(userRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (UserRegistrationException e) {
-            String errorMessage = "User registration failed";
+            UserResponse errorMessage = new UserResponse();
+            errorMessage.setErrorMessage("User registration failed");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         }
     }

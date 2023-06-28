@@ -16,24 +16,25 @@ public class LoginMapper {
         var loginResponse = new LoginResponse();
         if (user != null) {
             try {
-                setAuthority(loginResponse, Collections.singletonList(user.getRole()));
+//                setAuthority(loginResponse, Collections.singletonList(user.getRole()));
             } catch (RuntimeException e) {
                 System.out.println(e.getMessage());
             }
             loginResponse.setJwtToken(token);
-            loginResponse.setMessage(message);
+//            loginResponse.setMessage(message);
+            loginResponse.setUserId(user.getId());
         }
         return loginResponse;
     }
 
-    private void setAuthority(LoginResponse loginResponse, List<Role> roles) {
-        Set<String> authorities = new HashSet<>();
-        for (Role role : roles) {
-            if (role != null) {
-                authorities.add(role.getAuthority());
-            } else throw new RuntimeException("");
-        }
-        String join = String.join("", authorities);
-        loginResponse.setAuthorities(join);
-    }
+//    private void setAuthority(LoginResponse loginResponse, List<Role> roles) {
+//        Set<String> authorities = new HashSet<>();
+//        for (Role role : roles) {
+//            if (role != null) {
+//                authorities.add(role.getAuthority());
+//            } else throw new RuntimeException("");
+//        }
+//        String join = String.join("", authorities);
+//        loginResponse.setAuthorities(join);
+//    }
 }

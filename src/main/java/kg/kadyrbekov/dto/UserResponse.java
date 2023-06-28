@@ -1,6 +1,10 @@
 package kg.kadyrbekov.dto;
 
+import kg.kadyrbekov.model.enums.Role;
 import lombok.*;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Getter
 @NoArgsConstructor
@@ -9,19 +13,11 @@ import lombok.*;
 @Builder
 public class UserResponse {
 
-    
     private Long id;
 
-    private String firstName;
+    private String token;
 
-    private String lastName;
+    private String errorMessage;
 
-    private String phoneNumber;
-
-    private String email;
-
-    private String password;
-
-    private int age;
 
 }

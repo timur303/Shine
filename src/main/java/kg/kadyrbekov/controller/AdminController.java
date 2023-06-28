@@ -66,9 +66,9 @@ public class AdminController {
 
         if (user != null) {
             UserResponse response = new UserResponse();
-            response.setFirstName(user.getFirstName());
-            response.setLastName(user.getLastName());
-            response.setEmail(user.getEmail());
+//            response.setFirstName(user.getFirstName());
+//            response.setLastName(user.getLastName());
+//            response.setEmail(user.getEmail());
 
             return ResponseEntity.ok(response);
         } else {

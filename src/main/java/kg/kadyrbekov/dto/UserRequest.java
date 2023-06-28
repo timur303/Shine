@@ -19,4 +19,7 @@ public class UserRequest {
 
     private String password;
 
+    private boolean privacyPolicyAccepted;
+
+
 }

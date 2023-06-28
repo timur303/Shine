@@ -16,9 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,26 +40,6 @@ public class CarService {
 
 
 
-//    public CarsResponse createCar(CarsRequest request, List<MultipartFile> files) throws NotFoundException, IOException {
-//        Cars cars = mapToEntity(request);
-//        User user = getAuthentication();
-////        List<Image> images;
-//
-//        for (MultipartFile file : files) {
-//            if (file.getSize() != 0) {
-//                Image image = toImageEntity(file);
-//                cars.addImageToCars(image);
-//            }
-//        }
-//        cars.setUser(user);
-//        cars.setUserId(user.getId());
-//        Cars carsFromDB = carsRepository.save(cars);
-//        if (!cars.getImages().isEmpty()) {
-//            carsFromDB.setPreviewImageId(carsFromDB.getImages().get(0).getId());
-//        }
-//        carsRepository.save(cars);
-//        return mapToResponse(cars);
-//    }
 
     public CarsResponse createCar(CarsRequest request, List<MultipartFile> files) throws NotFoundException, IOException {
         Cars cars = mapToEntity(request);
@@ -84,7 +62,6 @@ public class CarService {
             carsFromDB.setPreviewImageId(images.get(0).getId());
         }
 
-        // Save the cars object and the associated images
         carsRepository.save(carsFromDB);
         imagesRepository.saveAll(images);
 
