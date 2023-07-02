@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','USER')")
 @RequestMapping("/api/avatar")
 @ApiImplicitParams({
         @ApiImplicitParam(name = "Authorization", value = "Bearer token", required = true, dataType = "string", paramType = "header")
