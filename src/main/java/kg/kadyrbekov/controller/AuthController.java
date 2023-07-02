@@ -29,6 +29,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -137,5 +139,16 @@ public class AuthController {
     @PostMapping("/reset_password")
     public AuthResponse resetPassword(@RequestParam String token, @RequestParam String password, @RequestParam String confirmPassword) {
         return resetPasswordService.save(token, password, confirmPassword);
+    }
+
+    @GetMapping("/getPhoneNumber/{phoneNumber}")
+    public List<User> getPhoneNumber(@PathVariable String phoneNumber) {
+        return Collections.singletonList(userRepository.findByPhoneNumber(phoneNumber).get());
+    }
+
+
+    @GetMapping("/getEmail/{email}")
+    public List<User> getEmail(@PathVariable String email) {
+        return Collections.singletonList(userRepository.findByPhoneNumber(email).get());
     }
 }
