@@ -29,7 +29,7 @@ public class AvatarController {
             @ApiResponse(code = 404, message = "Avatar not found")
     })
     @PostMapping("/uploadAvatar")
-    public ResponseEntity<String> uploadAvatar(@RequestPart("file") MultipartFile file) {
+    public ResponseEntity<String> uploadAvatar(@ApiParam(value = "Avatar file", required = true)@RequestPart("file") MultipartFile file) {
         try {
             Image image = avatarService.uploadAvatar(file);
             return ResponseEntity.ok("Avatar uploaded successfully. Image ID: " + image.getId());
