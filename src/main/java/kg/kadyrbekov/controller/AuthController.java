@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -142,13 +143,23 @@ public class AuthController {
     }
 
     @GetMapping("/getPhoneNumber/{phoneNumber}")
-    public List<User> getPhoneNumber(@PathVariable String phoneNumber) {
-        return Collections.singletonList(userRepository.findByPhoneNumber(phoneNumber).get());
+    public ResponseEntity<String> checkUserByPhoneNumber(@PathVariable String phoneNumber) {
+        Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
+        if (user.isPresent()) {
+            return ResponseEntity.ok("true");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user not found with phoneNumber " + phoneNumber);
+        }
     }
 
 
     @GetMapping("/getEmail/{email}")
-    public List<User> getEmail(@PathVariable String email) {
-        return Collections.singletonList(userRepository.findByPhoneNumber(email).get());
+    public ResponseEntity<String> checkUserByEmail(@PathVariable String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            return ResponseEntity.ok("true");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user not found with email " + email);
+        }
     }
 }

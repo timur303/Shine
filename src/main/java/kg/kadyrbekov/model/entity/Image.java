@@ -20,6 +20,8 @@ public class Image {
 
     private String originalFileName;
 
+    private String url;
+
     private Long size;
 
     private String contentType;

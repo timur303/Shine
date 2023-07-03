@@ -1,5 +1,6 @@
 package kg.kadyrbekov.services;
 
+import kg.kadyrbekov.dto.UserDTO;
 import kg.kadyrbekov.dto.UserRequest;
 import kg.kadyrbekov.dto.UserResponse;
 import kg.kadyrbekov.exception.NotFoundException;
@@ -84,6 +85,21 @@ public class AdminService {
     public User findByUserId(Long userId) throws NotFoundException {
         return userRepository.findById(userId).orElseThrow(()
                 -> new NotFoundException(String.format("User with id not found ", userId)));
+    }
+
+
+    public UserDTO getUserByID(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with id not found"));
+        UserDTO response = new UserDTO();
+        response.setAge(user.getAge());
+        response.setEmail(user.getEmail());
+        response.setId(user.getId());
+        response.setAvatar(user.getAvatar().getUrl());
+        response.setFirstName(user.getFirstName());
+        response.setLastName(user.getLastName());
+        response.setPhoneNumber(user.getPhoneNumber());
+
+        return response;
     }
 
 }

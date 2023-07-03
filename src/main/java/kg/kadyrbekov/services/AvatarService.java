@@ -33,27 +33,47 @@ public class AvatarService {
                 () -> new NotFoundException("User with email not found"));
     }
 
-    @Transactional
-    public Image uploadAvatar(MultipartFile file) throws IOException {
-        User user = getAuthentication();
+//    @Transactional
+//    public Image uploadAvatar(MultipartFile file) throws IOException {
+//        User user = getAuthentication();
+//
+//        if (user.getAvatar() != null) {
+//            throw new AvatarException("User already has an avatar. Cannot set a new one.");
+//        }
+//        Image image = new Image();
+//        image.setName(file.getName());
+//        image.setOriginalFileName(file.getOriginalFilename());
+//        image.setContentType(file.getContentType());
+//        image.setSize(file.getSize());
+//        image.setBytes(file.getBytes());
+//        image.setUser(user);
+//
+//        user.setAvatar(image);
+//
+//
+//        return imageRepository.save(image);
+//    }
+public Image uploadAvatar(Long userId, MultipartFile file) throws IOException {
+    User user = userRepository.findById(userId).orElseThrow(
+            () -> new NotFoundException("User with ID not found"));
 
-        if (user.getAvatar() != null) {
-            throw new AvatarException("User already has an avatar. Cannot set a new one.");
-        }
-
-        Image image = new Image();
-        image.setName(file.getName());
-        image.setOriginalFileName(file.getOriginalFilename());
-        image.setContentType(file.getContentType());
-        image.setSize(file.getSize());
-        image.setBytes(file.getBytes());
-        image.setUser(user);
-
-        user.setAvatar(image);
-
-
-        return imageRepository.save(image);
+    if (user.getAvatar() != null) {
+        throw new AvatarException("User already has an avatar. Cannot set a new one.");
     }
+
+    Image image = new Image();
+    image.setName(file.getName());
+    image.setOriginalFileName(file.getOriginalFilename());
+    image.setContentType(file.getContentType());
+    image.setSize(file.getSize());
+    image.setBytes(file.getBytes());
+    image.setUser(user);
+
+    user.setAvatar(image);
+
+    return imageRepository.save(image);
+}
+
 
     public void updateAvatar(Long avatarID, MultipartFile file) throws IOException, NotFoundException {
         User user = getAuthentication();
