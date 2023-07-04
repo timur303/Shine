@@ -29,14 +29,17 @@
 #
 # Build stage
 #
+# Stage 1: Build stage
 FROM maven:3.8.2-openjdk-17 AS build
-COPY . .
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+COPY src ./src
 RUN mvn clean package -Pprod -DskipTests -DmyCustomOption=value
 
-#
-# Package stage
-#
+# Stage 2: Package stage
 FROM openjdk:11-jdk
-COPY --from=build /target/demo-0.0.1-SNAPSHOT.jar demo.jar
+COPY --from=build /app/target/classes /app/classes
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","demo.jar"]
+ENTRYPOINT ["java","-cp","/app/classes","ShineApplication"]
