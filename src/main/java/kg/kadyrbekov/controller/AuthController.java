@@ -142,24 +142,5 @@ public class AuthController {
         return resetPasswordService.save(token, password, confirmPassword);
     }
 
-    @GetMapping("/getPhoneNumber/{phoneNumber}")
-    public ResponseEntity<String> checkUserByPhoneNumber(@PathVariable String phoneNumber) {
-        Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
-        if (user.isPresent()) {
-            return ResponseEntity.ok("true");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user not found with phoneNumber " + phoneNumber);
-        }
-    }
 
-
-    @GetMapping("/getEmail/{email}")
-    public ResponseEntity<String> checkUserByEmail(@PathVariable String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent()) {
-            return ResponseEntity.ok("true");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user not found with email " + email);
-        }
-    }
 }
