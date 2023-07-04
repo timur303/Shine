@@ -1,9 +1,0 @@
-FROM adoptopenjdk:17-jdk-hotspot
-
-WORKDIR /app
-
-COPY target/Shine-0.0.1-SNAPSHOT.jar /app/Shine.jar
-
-EXPOSE 9090
-
-CMD ["java", "-jar", "Shine.jar"]
