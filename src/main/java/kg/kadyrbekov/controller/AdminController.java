@@ -47,16 +47,15 @@ public class AdminController {
             @ApiResponse(code = 200, message = "Successfully retrieved the user"),
             @ApiResponse(code = 404, message = "User not found")
     })
-
     public ResponseEntity<UserDTO> getUserByID(@PathVariable Long userID) {
-        UserDTO user = adminService.getUserByID(userID);
-        if (user != null) {
+        try {
+            UserDTO user = adminService.getUserByID(userID);
             return ResponseEntity.ok(user);
-        } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("user with email not found " + userID);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        return ResponseEntity.ok().build();
     }
+
 
     @PostMapping("/manager")
     @ApiOperation("Assign Manager Role")

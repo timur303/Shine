@@ -5,6 +5,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @AllArgsConstructor
 @Builder
 public class UserDTO {
@@ -23,4 +24,5 @@ public class UserDTO {
 
     private String avatar;
 
+    private String MESSAGE = "User with id not found";
 }

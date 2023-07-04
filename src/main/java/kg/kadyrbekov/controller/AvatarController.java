@@ -51,7 +51,7 @@ public class AvatarController {
             image.setUser(user);
             image.setUrl(avatarUrl);
 
-            imageRepository.save(image); // Сохранение объекта Image
+            imageRepository.save(image);
 
             user.setAvatar(image);
             userRepository.save(user);
