@@ -24,5 +24,4 @@ public class UserDTO {
 
     private String avatar;
 
-    private String MESSAGE = "User with id not found";
 }

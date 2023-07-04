@@ -41,18 +41,19 @@ public class AdminController {
         imagesRepository.deleteAll();
     }
 
-    @GetMapping("getUser/{userID}")
+    @GetMapping("getUser/{userId}")
     @ApiOperation("Get User by ID")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Successfully retrieved the user"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    public ResponseEntity<UserDTO> getUserByID(@PathVariable Long userID) {
+    public ResponseEntity<Object> getUserByID(@PathVariable Long userId) {
         try {
-            UserDTO user = adminService.getUserByID(userID);
+            UserDTO user = adminService.getUserByID(userId);
             return ResponseEntity.ok(user);
         } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            String errorMessage = "User not found for ID: " + userId;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
         }
     }
 
