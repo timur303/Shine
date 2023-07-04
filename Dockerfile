@@ -37,6 +37,6 @@ RUN mvn clean package -DskipTests
 
 
 FROM openjdk:11-jdk-slim
-COPY --from=build /target/Shine-0.0.1-SNAPSHOT.jar shine.jar
+COPY --from=build /target/Shine-0.0.1-SNAPSHOT.jar Shine.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","Shine.jar"]
