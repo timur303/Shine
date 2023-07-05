@@ -69,7 +69,7 @@ public class PostController {
         return ResponseEntity.ok(responseList);
     }
 
-    @GetMapping("/getCar/{id}")
+    @GetMapping("/getCarByID/{id}")
     @ApiOperation("Get car by ID")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Successfully retrieved the car"),

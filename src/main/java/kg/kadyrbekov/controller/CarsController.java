@@ -4,6 +4,7 @@ import io.swagger.annotations.*;
 import kg.kadyrbekov.dto.CarsRequest;
 import kg.kadyrbekov.dto.CarsResponse;
 import kg.kadyrbekov.exception.NotFoundException;
+import kg.kadyrbekov.exception.UnauthorizedException;
 import kg.kadyrbekov.model.entity.Image;
 import kg.kadyrbekov.model.enums.CarsStatus;
 import kg.kadyrbekov.services.CarService;
@@ -31,13 +32,13 @@ public class CarsController {
     private final CarService carsService;
 
 
-    @ApiOperation("Upload a new car image")
+    @ApiOperation("Create car ")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = " successfully"),
             @ApiResponse(code = 404, message = "not found")
     })
-    @PostMapping("/carCreates")
-    public CarsResponse createCars(
+    @PostMapping("/carCreate")
+    public ResponseEntity<?> createCars(
             @RequestBody CarsRequest request,
             @RequestPart(value = "file1", required = false) MultipartFile file1,
             @RequestPart(value = "file2", required = false) MultipartFile file2,
@@ -67,7 +68,14 @@ public class CarsController {
         if (file11 != null) files.add(file11);
         if (file12 != null) files.add(file12);
 
-        return carsService.createCar(request, files);
+        try {
+            CarsResponse response = carsService.createCar(request, files);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request");
+        } catch (UnauthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
     }
 
 

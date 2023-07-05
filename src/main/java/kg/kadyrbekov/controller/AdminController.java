@@ -2,12 +2,14 @@ package kg.kadyrbekov.controller;
 
 import io.swagger.annotations.*;
 import kg.kadyrbekov.dto.UserDTO;
+import kg.kadyrbekov.exception.Error;
 import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.model.User;
 import kg.kadyrbekov.repositories.ImagesRepository;
 import kg.kadyrbekov.repositories.UserRepository;
 import kg.kadyrbekov.services.AdminService;
 import lombok.RequiredArgsConstructor;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,18 +44,18 @@ public class AdminController {
     }
 
     @GetMapping("getUser/{userId}")
-    @ApiOperation("Get User by ID")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully retrieved the user"),
-            @ApiResponse(code = 404, message = "User not found")
+            @ApiResponse(code = 200, message = "Success ", response = UserDTO.class),
+            @ApiResponse(code = 404, message = "User not found ", response = Error.class)
     })
-    public ResponseEntity<Object> getUserByID(@PathVariable Long userId) {
+
+    public ResponseEntity<?> getUserByID(@PathVariable Long userId) {
         try {
             UserDTO user = adminService.getUserByID(userId);
             return ResponseEntity.ok(user);
         } catch (NotFoundException e) {
-            String errorMessage = "User not found for ID: " + userId;
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+            Error error = new Error("User not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
 
