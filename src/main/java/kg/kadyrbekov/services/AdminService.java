@@ -94,9 +94,10 @@ public class AdminService {
         response.setAge(user.getAge());
         response.setEmail(user.getEmail());
         response.setId(user.getId());
-        response.setAvatar(user.getAvatar().getUrl());
-        if (response.getAvatar()==null){
-            return null;
+        if (user.getAvatar() != null) {
+            response.setAvatar(user.getAvatar().getUrl());
+        } else {
+            response.setAvatar(null);
         }
         response.setFirstName(user.getFirstName());
         response.setLastName(user.getLastName());
