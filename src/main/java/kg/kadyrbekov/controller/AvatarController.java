@@ -112,22 +112,24 @@ public class AvatarController {
         Locale locale = new Locale(selectedLanguage);
 
         try {
-            Image image = imageRepository.findById(avatarID)
-                    .orElseThrow(() -> new NotFoundException("Avatar with ID not found"));
+            String message = messageSource.getMessage("avatar.getID", null, locale);
+            MessageInvalid responses = new MessageInvalid();
+            responses.setMessages(message);
+            Image image = imageRepository.findById(avatarID).get();
 
             cloudinary.uploader().destroy(image.getUrl(), ObjectUtils.emptyMap());
             imageRepository.delete(image);
             String messages = messageSource.getMessage("avatar.deleted", null, locale);
-            MessageInvalid messageInvalid = new MessageInvalid();
-            messageInvalid.setMessages(messages);
-            return ResponseEntity.ok(messageInvalid);
+            MessageInvalid response = new MessageInvalid();
+            response.setMessages(messages);
+            return ResponseEntity.ok(response);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            String messages = messageSource.getMessage("avatar.deleted.failed", null, locale);
+            String messages = messageSource.getMessage("avatar.getID", null, locale);
             MessageInvalid invalid = new MessageInvalid();
             invalid.setMessages(messages);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(invalid);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(invalid);
         }
     }
 

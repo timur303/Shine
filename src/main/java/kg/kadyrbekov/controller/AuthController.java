@@ -143,7 +143,7 @@ public class AuthController {
             }
 
             if (userRepository.findByEmail(userRequest.getEmail()).isPresent()) {
-                String errorMessage = messageSource.getMessage("car.getID", null, locale);
+                String errorMessage = messageSource.getMessage("email.exists", null, locale);
                 UserResponse response = new UserResponse();
                 response.setErrorMessage(errorMessage);
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
