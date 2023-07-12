@@ -3,6 +3,7 @@ package kg.kadyrbekov.controller;
 import io.swagger.annotations.*;
 import kg.kadyrbekov.dto.CarsRequest;
 import kg.kadyrbekov.dto.CarsResponse;
+import kg.kadyrbekov.dto.MessageInvalid;
 import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.exception.UnauthorizedException;
 import kg.kadyrbekov.model.enums.CarsStatus;
@@ -97,19 +98,26 @@ public class CarsController {
             @ApiResponse(code = 404, message = "Resource not found")
     })
     @PatchMapping("/carUpdate/{id}")
-    public ResponseEntity<String> updateCar(HttpServletRequest servletRequest, @PathVariable("id") Long id, CarsRequest request) {
+    public ResponseEntity<?> updateCar(HttpServletRequest servletRequest, @PathVariable("id") Long id, CarsRequest request) {
         String selectedLanguage = (String) servletRequest.getSession().getAttribute("language");
         Locale locale = new Locale(selectedLanguage);
 
         try {
             carsService.update(id, request);
             String message = messageSource.getMessage("car.updated.success", null, locale);
-            return ResponseEntity.ok(message);
+            MessageInvalid invalid = new MessageInvalid();
+            invalid.setMessages(message);
+            return ResponseEntity.ok(invalid);
         } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
+            String messages = messageSource.getMessage("car.getID", null, locale);
+            MessageInvalid invalid = new MessageInvalid();
+            invalid.setMessages(messages);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(invalid);
         } catch (IOException e) {
             String message = messageSource.getMessage("car.updated.invalid", null, locale);
-            return ResponseEntity.badRequest().body(message);
+            MessageInvalid invalid = new MessageInvalid();
+            invalid.setMessages(message);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(invalid);
         }
     }
 
@@ -119,16 +127,21 @@ public class CarsController {
             @ApiResponse(code = 404, message = "Resource not found")
     })
     @PatchMapping("/giveStatus/{carId}")
-    public ResponseEntity<String> giveCarStatus(HttpServletRequest servletRequest, @PathVariable("carId") Long carId, @RequestParam("status") CarsStatus status) {
+    public ResponseEntity<?> giveCarStatus(HttpServletRequest servletRequest, @PathVariable("carId") Long carId, @RequestParam("status") CarsStatus status) {
         String selectedLanguage = (String) servletRequest.getSession().getAttribute("language");
         Locale locale = new Locale(selectedLanguage);
 
         try {
             carsService.updateCarStatus(carId, status);
             String messages = messageSource.getMessage("car.status.success", null, locale);
-            return ResponseEntity.ok(messages);
+            MessageInvalid response = new MessageInvalid();
+            response.setMessages(messages);
+            return ResponseEntity.ok(response);
         } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
+            String messages = messageSource.getMessage("car.getID", null, locale);
+            MessageInvalid invalid = new MessageInvalid();
+            invalid.setMessages(messages);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(invalid);
         }
     }
 
@@ -138,16 +151,21 @@ public class CarsController {
             @ApiResponse(code = 404, message = "Resource not found")
     })
     @PostMapping("/cancelStatus/{carId}")
-    public ResponseEntity<String> cancelCarStatus(HttpServletRequest request, @PathVariable("carId") Long carId) {
+    public ResponseEntity<?> cancelCarStatus(HttpServletRequest request, @PathVariable("carId") Long carId) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
         Locale locale = new Locale(selectedLanguage);
 
         try {
             carsService.cancelCarStatus(carId);
             String messages = messageSource.getMessage("car.status.cancel", null, locale);
-            return ResponseEntity.ok(messages);
+            MessageInvalid response = new MessageInvalid();
+            response.setMessages(messages);
+            return ResponseEntity.ok(response);
         } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
+            String messages = messageSource.getMessage("car.getID", null, locale);
+            MessageInvalid invalid = new MessageInvalid();
+            invalid.setMessages(messages);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(invalid);
         }
     }
 
@@ -157,16 +175,21 @@ public class CarsController {
             @ApiResponse(code = 404, message = "Resource not found")
     })
     @DeleteMapping("deleteCar/{id}")
-    public ResponseEntity<String> deleteCar(HttpServletRequest request, @PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteCar(HttpServletRequest request, @PathVariable("id") Long id) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
         Locale locale = new Locale(selectedLanguage);
 
         try {
             carsService.deleteCar(id);
             String messages = messageSource.getMessage("car.deleted.success", null, locale);
-            return ResponseEntity.ok(messages);
+            MessageInvalid response = new MessageInvalid();
+            response.setMessages(messages);
+            return ResponseEntity.ok(response);
         } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
+            String messages = messageSource.getMessage("car.getID", null, locale);
+            MessageInvalid invalid = new MessageInvalid();
+            invalid.setMessages(messages);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(invalid);
         }
     }
 }
