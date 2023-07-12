@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import kg.kadyrbekov.dto.MessageInvalid;
 import kg.kadyrbekov.exception.AvatarException;
 import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.model.User;
@@ -39,7 +40,7 @@ public class AvatarController {
     private final Cloudinary cloudinary;
 
     @PostMapping("/uploadAvatar")
-    public ResponseEntity<String> uploadAvatar(HttpServletRequest request, @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<?> uploadAvatar(HttpServletRequest request, @RequestPart("file") MultipartFile file) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
         Locale locale = new Locale(selectedLanguage);
 
@@ -67,15 +68,19 @@ public class AvatarController {
             user.setAvatar(image);
             userRepository.save(user);
             String message = messageSource.getMessage("avatar.upload", null, locale);
-            return ResponseEntity.ok(message);
+            MessageInvalid messageInvalid = new MessageInvalid();
+            messageInvalid.setMessages(message);
+            return ResponseEntity.ok(messageInvalid);
         } catch (IOException e) {
             String message = messageSource.getMessage("avatar.failed", null, locale);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+            MessageInvalid messageInvalid = new MessageInvalid();
+            messageInvalid.setMessages(message);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messageInvalid);
         }
     }
 
     @PatchMapping("/updateAvatar/{avatarId}")
-    public ResponseEntity<String> updateAvatar(HttpServletRequest request, @PathVariable Long avatarId, @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<?> updateAvatar(HttpServletRequest request, @PathVariable Long avatarId, @RequestPart("file") MultipartFile file) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
         Locale locale = new Locale(selectedLanguage);
 
@@ -90,15 +95,19 @@ public class AvatarController {
             image.setUrl(newAvatarUrl);
             imageRepository.save(image);
             String messages = messageSource.getMessage("updated.success", null, locale);
-            return ResponseEntity.ok(messages);
+            MessageInvalid messageInvalid = new MessageInvalid();
+            messageInvalid.setMessages(messages);
+            return ResponseEntity.ok(messageInvalid);
         } catch (IOException | NotFoundException e) {
             String messages = messageSource.getMessage("update.failed", null, locale);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messages);
+            MessageInvalid messageInvalid = new MessageInvalid();
+            messageInvalid.setMessages(messages);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messageInvalid);
         }
     }
 
     @DeleteMapping("/deleteAvatar/{avatarID}")
-    public ResponseEntity<String> deleteAvatar(HttpServletRequest request, @PathVariable Long avatarID) {
+    public ResponseEntity<?> deleteAvatar(HttpServletRequest request, @PathVariable Long avatarID) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
         Locale locale = new Locale(selectedLanguage);
 
@@ -109,12 +118,16 @@ public class AvatarController {
             cloudinary.uploader().destroy(image.getUrl(), ObjectUtils.emptyMap());
             imageRepository.delete(image);
             String messages = messageSource.getMessage("avatar.deleted", null, locale);
-            return ResponseEntity.ok(messages);
+            MessageInvalid messageInvalid = new MessageInvalid();
+            messageInvalid.setMessages(messages);
+            return ResponseEntity.ok(messageInvalid);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             String messages = messageSource.getMessage("avatar.deleted.failed", null, locale);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messages);
+            MessageInvalid invalid = new MessageInvalid();
+            invalid.setMessages(messages);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(invalid);
         }
     }
 
