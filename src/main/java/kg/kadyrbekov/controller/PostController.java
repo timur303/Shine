@@ -2,6 +2,7 @@ package kg.kadyrbekov.controller;
 
 import io.swagger.annotations.*;
 import kg.kadyrbekov.dto.CarsResponse;
+import kg.kadyrbekov.dto.MessageInvalid;
 import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.model.entity.Cars;
 import kg.kadyrbekov.model.enums.CarsStatus;
@@ -9,6 +10,7 @@ import kg.kadyrbekov.services.CarService;
 import kg.kadyrbekov.services.PostService;
 import kg.kadyrbekov.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +18,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/post")
 @ApiImplicitParams({
-        @ApiImplicitParam(name = "Authorization", value = "Bearer token", required = true, dataType = "string", paramType = "header")
+        @ApiImplicitParam(name = "Authorization", required = true, dataType = "string", paramType = "header")
 })
 public class PostController {
+
+    private final MessageSource messageSource;
 
     private final PostService postService;
 
@@ -30,6 +36,28 @@ public class PostController {
 
     private final CarService carsService;
 
+    @PostMapping("/like/{carId}")
+    @ApiOperation("Like a car")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Car liked successfully"),
+            @ApiResponse(code = 404, message = "Car or user not found"),
+            @ApiResponse(code = 500, message = "Failed to like car")
+    })
+    public ResponseEntity<String> likeCar(HttpServletRequest request, @PathVariable Long carId) {
+        String selectedLanguage = (String) request.getSession().getAttribute("language");
+        Locale locale = new Locale(selectedLanguage);
+
+        try {
+            String messages = messageSource.getMessage("car.liked", null, locale);
+            postService.likeCar(carId);
+            return ResponseEntity.ok(messages);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            String messages = messageSource.getMessage("car.liked.invalid", null, locale);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messages);
+        }
+    }
 
     @GetMapping("/getAllByStatus/{status}")
     @ApiOperation("Get cars by status")
@@ -75,15 +103,20 @@ public class PostController {
             @ApiResponse(code = 200, message = "Successfully retrieved the car"),
             @ApiResponse(code = 404, message = "Car not found with the specified ID")
     })
-    public ResponseEntity<CarsResponse> getCarById(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getCarById(HttpServletRequest request, @PathVariable("id") Long id) {
+        String selectedLanguage = (String) request.getSession().getAttribute("language");
+        Locale locale = new Locale(selectedLanguage);
+
         try {
-            CarsResponse response = carsService.findByIdCars(id);
+            CarsResponse response = carsService.getByIdCars(id);
             return ResponseEntity.ok(response);
         } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
+            String messages = messageSource.getMessage("car.getID", null, locale);
+            MessageInvalid response = new MessageInvalid();
+            response.setMessages(messages);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
-
 
     @PostMapping("/favorites/{carId}")
     @ApiOperation("Add car to favorites")
@@ -92,15 +125,19 @@ public class PostController {
             @ApiResponse(code = 404, message = "Car or user not found"),
             @ApiResponse(code = 500, message = "Failed to add car to favorites")
     })
-    public ResponseEntity<String> addCarToFavorites(
-            @PathVariable Long carId) {
+    public ResponseEntity<String> addCarToFavorites(HttpServletRequest request, @PathVariable Long carId) {
+        String selectedLanguage = (String) request.getSession().getAttribute("language");
+        Locale locale = new Locale(selectedLanguage);
+
         try {
+            String messages = messageSource.getMessage("favorite.added", null, locale);
             userService.addCarToFavorites(carId);
-            return ResponseEntity.ok("Car added to favorites successfully");
+            return ResponseEntity.ok(messages);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add car to favorites");
+            String messages = messageSource.getMessage("favorite.add.failed", null, locale);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messages);
         }
     }
 
@@ -112,32 +149,19 @@ public class PostController {
             @ApiResponse(code = 404, message = "Car or user not found"),
             @ApiResponse(code = 500, message = "Failed to remove car from favorites")
     })
-    public ResponseEntity<String> removeCarFromFavorites(@PathVariable Long carId) {
-        try {
-            userService.removeCarFromFavorites(carId);
-            return ResponseEntity.ok("Car added to favorites successfully");
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add car to favorites");
-        }
-    }
+    public ResponseEntity<String> removeCarFromFavorites(HttpServletRequest request, @PathVariable Long carId) {
+        String selectedLanguage = (String) request.getSession().getAttribute("language");
+        Locale locale = new Locale(selectedLanguage);
 
-    @PostMapping("/like/{carId}")
-    @ApiOperation("Like a car")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Car liked successfully"),
-            @ApiResponse(code = 404, message = "Car or user not found"),
-            @ApiResponse(code = 500, message = "Failed to like car")
-    })
-    public ResponseEntity<String> likeCar(@PathVariable Long carId) {
         try {
-            postService.likeCar(carId);
-            return ResponseEntity.ok("Car liked successfully");
+            String messages = messageSource.getMessage("favorite.remove", null, locale);
+            userService.removeCarFromFavorites(carId);
+            return ResponseEntity.ok(messages);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed like to car");
+            String messages = messageSource.getMessage("favorite.remove.failed", null, locale);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messages);
         }
     }
 
@@ -148,14 +172,19 @@ public class PostController {
             @ApiResponse(code = 404, message = "Car or user not found"),
             @ApiResponse(code = 500, message = "Failed to cancel like on car")
     })
-    public ResponseEntity<String> cancelLikeCar(@PathVariable Long carId) {
+    public ResponseEntity<String> cancelLikeCar(HttpServletRequest request, @PathVariable Long carId) {
+        String selectedLanguage = (String) request.getSession().getAttribute("language");
+        Locale locale = new Locale(selectedLanguage);
+
         try {
+            String messages = messageSource.getMessage("car.cancel.liked", null, locale);
             postService.cancelLikeCar(carId);
-            return ResponseEntity.ok("Like cancelled successfully");
+            return ResponseEntity.ok(messages);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed like to car");
+            String messages = messageSource.getMessage("car.cancel.liked.filed", null, locale);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messages);
         }
     }
 

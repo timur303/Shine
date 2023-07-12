@@ -83,19 +83,6 @@ public class UserService {
     }
 
 
-//    public UserResponse register(UserRequest userRequest) {
-//        User user1 = new User();
-//        userRepository.findByEmail(user1.getEmail());
-//        User user = mapToEntity(userRequest);
-//        user.setPassword(encoder.encode(userRequest.getPassword()));
-//        userRepository.save(user);
-//        return mapToResponse(user);
-//    }
-
-    public User findByIDUser(Long id) throws NotFoundException {
-        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id not found" + id));
-    }
-
 
     public User mapToEntity(UserRequest request) {
 
@@ -138,7 +125,7 @@ public class UserService {
     }
 
     public void addCarToFavorites(Long carId) throws NotFoundException {
-        User user = getAuthentication();
+        User user = getAuthenticatedUser();
         Cars car = carsRepository.findById(carId)
                 .orElseThrow(() -> new NotFoundException("Car with ID " + carId + " not found"));
 
@@ -150,7 +137,7 @@ public class UserService {
     }
 
     public void removeCarFromFavorites(Long carId) throws NotFoundException {
-        User user = getAuthentication();
+        User user = getAuthenticatedUser();
         Cars car = carsRepository.findById(carId)
                 .orElseThrow(() -> new NotFoundException("Car with ID " + carId + " not found"));
 
@@ -161,16 +148,16 @@ public class UserService {
         carsRepository.save(car);
     }
 
-    public User getAuthentication() throws NotFoundException {
+    public User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        return userRepository.findByEmail(email).orElseThrow(
-                () -> new NotFoundException("User with email not found"));
+        return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found!"));
     }
 
 
+
     public UserResponse updateProfile(UserRequest updatedUserRequest) {
-        User existingUser = getAuthentication();
+        User existingUser = getAuthenticatedUser();
 
         if (existingUser == null) {
             throw new RuntimeException("User not found.");

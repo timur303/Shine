@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Language Selection</title>
+</head>
+<body>
+<h2>Language Selection</h2>
+<form action="/registration" method="post">
+    <select name="lang">
+        <option value="en" th:selected="${#locale.language == 'en'}">English</option>
+        <option value="ru" th:selected="${#locale.language == 'ru'}">Русский</option>
+    </select>
+    <input type="submit" value="Register">
+</form>
+</body>
+</html>

@@ -42,7 +42,7 @@ public class User implements UserDetails {
 
     private int age;
 
-    @OneToOne(cascade = REFRESH,mappedBy = "user")
+    @OneToOne(cascade = REFRESH, mappedBy = "user")
     private Image avatar;
 
     private String phoneNumber;
@@ -53,6 +53,8 @@ public class User implements UserDetails {
     private String password;
 
     private boolean blocked;
+
+//    private boolean privacyPolicyAccepted;
 
 
     @OneToMany(mappedBy = "user")

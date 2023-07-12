@@ -19,28 +19,31 @@ public class UserServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-        @Override
-        @Transactional
-        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user;
-        if (username.matches(".*@.*")) {
-            user = userRepository.findByEmail(username)
-                    .orElseThrow(() -> new UsernameNotFoundException(String.format("User with email - %s, not found", username)));
-        } else {
-            user = userRepository.findByPhoneNumber(username)
-                    .orElseThrow(() -> new UsernameNotFoundException(String.format("User with phone number - %s, not found", username)));
-        }
-        return user;
-    }
-//    @Override
-//    @Transactional
+    @Override
+    @Transactional
 //    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        User user = userRepository.findByEmail(username).get();
-//        if (user != null) {
-//            return user;
+//        User user;
+//        if (username.matches(".*@.*")) {
+//            kg.kadyrbekov.model.User userEntity = userRepository.findByEmail(username)
+//                    .orElseThrow(() -> new UsernameNotFoundException(format("User with email - %s, not found", username)));
+//            // создать объект UserDetails на основе userEntity и вернуть его
+//            user = new User(userEntity.getUsername(), userEntity.getPassword(), userEntity.getAuthorities());
 //        } else {
-//            throw new UsernameNotFoundException(format("User with email - %s, not found", username));
+//            kg.kadyrbekov.model.User userEntity = userRepository.findByPhoneNumber(username)
+//                    .orElseThrow(() -> new UsernameNotFoundException(format("User with phone number - %s, not found", username)));
+//            // создать объект UserDetails на основе userEntity и вернуть его
+//            user = new User(userEntity.getUsername(), userEntity.getPassword(), userEntity.getAuthorities());
 //        }
+//        return user;
 //    }
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(username).get();
+        if (user != null) {
+            return user;
+        } else {
+            throw new UsernameNotFoundException(format("User with email - %s, not found", username));
+        }
+
+    }
 
 }

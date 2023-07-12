@@ -1,5 +1,7 @@
 package kg.kadyrbekov.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import kg.kadyrbekov.dto.CarsRequest;
 import kg.kadyrbekov.dto.CarsResponse;
 import kg.kadyrbekov.exception.NotFoundException;
@@ -14,12 +16,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -31,25 +35,28 @@ public class CarService {
 
     private final ImagesRepository imagesRepository;
 
-    public User getAuthentication() throws NotFoundException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        return userRepository.findByEmail(email).orElseThrow(
-                () -> new NotFoundException("User with email not found"));
-    }
+    private final Cloudinary cloudinary;
 
-
-
-
-    public CarsResponse createCar(CarsRequest request, List<MultipartFile> files) throws NotFoundException, IOException {
+    @Transactional
+    public CarsResponse createCar( CarsRequest request, List<MultipartFile> files) throws NotFoundException, IOException {
         Cars cars = mapToEntity(request);
-        User user = getAuthentication();
+        User user = getAuthenticatedUser();
         List<Image> images = new ArrayList<>();
 
         for (MultipartFile file : files) {
             if (file.getSize() != 0) {
-                Image image = toImageEntity(file);
+                Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+                String imageUrl = (String) uploadResult.get("secure_url");
+
+                Image image = new Image();
+                image.setUrl(imageUrl);
                 image.setCars(cars);
+                image.setSize(file.getSize());
+//                String imageUrl = (String) uploadResult.get("secure_url");
+//                image.setUrl(imageUrl);
+                image.setName(file.getName());
+                image.setOriginalFileName(file.getOriginalFilename());
+                image.setContentType(file.getContentType());
                 images.add(image);
             }
         }
@@ -68,6 +75,23 @@ public class CarService {
         return mapToResponse(carsFromDB);
     }
 
+
+    public User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found!"));
+    }
+
+    private Image toImageEntity(MultipartFile file) throws IOException {
+        Image image = new Image();
+        image.setName(file.getName());
+        image.setOriginalFileName(file.getOriginalFilename());
+        image.setContentType(file.getContentType());
+        image.setSize(file.getSize());
+        image.setBytes(file.getBytes());
+        return image;
+    }
+
     public CarsResponse update(Long id, CarsRequest request) throws NotFoundException, IOException {
         Cars cars = carsRepository.findById(id).get();
         cars.setDescription(request.getDescription());
@@ -81,7 +105,6 @@ public class CarService {
         cars.setYearOfIssue(request.getYearOfIssue());
         cars.setTransmission(request.getTransmission());
         cars.setSteeringWheel(request.getSteeringWheel());
-//        cars.setReviews(request.getReviews());
         cars.setPrice(request.getPrice());
         cars.setModel(request.getModel());
         cars.setRegionCityOfSale(request.getRegionCityOfSale());
@@ -106,26 +129,50 @@ public class CarService {
         return carsRepository.findAll();
     }
 
-    public CarsResponse findByIdCars(Long id) throws NotFoundException {
-        Cars car = carsRepository.findById(id).orElseThrow(() ->
+    @Transactional
+    public CarsResponse getByIdCars(Long id) throws NotFoundException {
+        Cars cars = carsRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Car with id not found: " + id));
-
         CarsResponse response = new CarsResponse();
-        response.setId(car.getId());
-        response.setModel(car.getModel());
+        response.setId(cars.getId());
+        response.setBody(cars.getBody());
+        response.setColor(cars.getColor());
+        response.setBrand(cars.getBrand());
+        response.setAccounting(cars.getAccounting());
+        response.setAvailability(cars.getAvailability());
+        response.setCondition(cars.getCondition());
+        response.setCustoms(cars.getCustoms());
+        response.setDescription(cars.getDescription());
+        response.setYearOfIssue(cars.getYearOfIssue());
+        response.setTransmission(cars.getTransmission());
+        response.setSteeringWheel(cars.getSteeringWheel());
+        response.setRegionCityOfSale(cars.getRegionCityOfSale());
+        response.setPrice(cars.getPrice());
+        response.setModel(cars.getModel());
+        response.setMileage(cars.getMileage());
+        response.setExchange(cars.getExchange());
+        response.setEngine(cars.getEngine());
+        response.setDriveUnit(cars.getDriveUnit());
+        response.setDateOfCreated(LocalDateTime.now());
+        response.setCategory(cars.getCategory());
+        response.setCarsStatus(cars.getCarsStatus());
+        response.setCity(cars.getCity());
+//        response.setImages(cars.getImages().get(0).getUrl());
+
+        if (!cars.getImages().isEmpty()) {
+            response.setImages(cars.getImages().get(0).getUrl());
+        } else {
+            response.setImages("jok");
+        }
+
+        List<String> imageUrls = new ArrayList<>();
+        for (Image image : cars.getImages()) {
+            imageUrls.add(image.getUrl());
+        }
+        response.setImages(String.join(", ", imageUrls));
 
         return response;
-    }
 
-
-    private Image toImageEntity(MultipartFile file) throws IOException {
-        Image image = new Image();
-        image.setName(file.getName());
-        image.setOriginalFileName(file.getOriginalFilename());
-        image.setContentType(file.getContentType());
-        image.setSize(file.getSize());
-        image.setBytes(file.getBytes());
-        return image;
     }
 
 

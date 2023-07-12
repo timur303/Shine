@@ -1,9 +1,6 @@
 package kg.kadyrbekov.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import kg.kadyrbekov.model.User;
 import kg.kadyrbekov.model.entity.Image;
-import kg.kadyrbekov.model.entity.Review;
 import kg.kadyrbekov.model.enums.CarsStatus;
 import kg.kadyrbekov.model.enums.Category;
 import kg.kadyrbekov.model.enums.City;
@@ -11,16 +8,17 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @AllArgsConstructor
 @Builder
 public class CarsResponse {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,12 +62,15 @@ public class CarsResponse {
 
     private LocalDateTime dateOfCreated;
 
-    @JsonIgnore
-    private List<Image> images = new ArrayList<>();
+    private String images;
 
-//    private User user;
+    public String getImages() {
+        return images;
+    }
 
-//    private Long userId;
+    public void setImages(String images) {
+        this.images = images;
+    }
 
     @Enumerated(EnumType.STRING)
     private Category category;
@@ -80,6 +81,5 @@ public class CarsResponse {
     @Enumerated(EnumType.STRING)
     private CarsStatus carsStatus;
 
-//    private List<Review> reviews;
 
 }

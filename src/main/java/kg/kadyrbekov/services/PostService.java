@@ -19,19 +19,20 @@ public class PostService {
     private final UserRepository userRepository;
 
 
-    public User getAuthentication() throws NotFoundException {
+
+    public User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        return userRepository.findByEmail(email).orElseThrow(
-                () -> new NotFoundException("User with email not found"));
+        return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found!"));
     }
 
 
     public void likeCar(Long carId) throws NotFoundException {
-        User user = getAuthentication();
+        User user = getAuthenticatedUser();
         Cars car = carsRepository.findById(carId)
                 .orElseThrow(() -> new NotFoundException("Car with ID " + carId + " not found"));
-        if (!car.getLikedUsers().contains(user)) {
+
+        if (!carsRepository.existsByIdAndLikedUsers(carId, user)) {
             car.getLikedUsers().add(user);
             car.setLikes(car.getLikes() + 1);
             carsRepository.save(car);
@@ -39,7 +40,7 @@ public class PostService {
     }
 
     public void cancelLikeCar(Long carId) throws NotFoundException {
-        User user = getAuthentication();
+        User user = getAuthenticatedUser();
         Cars car = carsRepository.findById(carId)
                 .orElseThrow(() -> new NotFoundException("Car with ID " + carId + " not found"));
 

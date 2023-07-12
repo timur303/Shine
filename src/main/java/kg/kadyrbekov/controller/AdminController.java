@@ -10,10 +10,13 @@ import kg.kadyrbekov.repositories.UserRepository;
 import kg.kadyrbekov.services.AdminService;
 import lombok.RequiredArgsConstructor;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 import java.util.Optional;
 
 @RestController
@@ -27,6 +30,8 @@ import java.util.Optional;
 public class AdminController {
 
     private final AdminService adminService;
+
+    private final MessageSource messageSource;
 
     private final UserRepository userRepository;
 
@@ -49,12 +54,16 @@ public class AdminController {
             @ApiResponse(code = 404, message = "User not found ", response = Error.class)
     })
 
-    public ResponseEntity<?> getUserByID(@PathVariable Long userId) {
+    public ResponseEntity<?> getUserByID(HttpServletRequest request, @PathVariable Long userId) {
+        String selectedLanguage = (String) request.getSession().getAttribute("language");
+        Locale locale = new Locale(selectedLanguage);
+
         try {
             UserDTO user = adminService.getUserByID(userId);
             return ResponseEntity.ok(user);
         } catch (NotFoundException e) {
-            Error error = new Error("User not found");
+            String message = messageSource.getMessage("user.notfound", null, locale);
+            Error error = new Error(message);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
@@ -105,23 +114,30 @@ public class AdminController {
     }
 
     @GetMapping("/getPhoneNumber/{phoneNumber}")
-    public ResponseEntity<String> checkUserByPhoneNumber(@PathVariable String phoneNumber) {
+    public ResponseEntity<String> checkUserByPhoneNumber(HttpServletRequest request, @PathVariable String phoneNumber) {
+        String selectedLanguage = (String) request.getSession().getAttribute("language");
+        Locale locale = new Locale(selectedLanguage);
+
         Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
         if (user.isPresent()) {
             return ResponseEntity.ok("true");
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user not found with phoneNumber " + phoneNumber);
+            String messages = messageSource.getMessage("user.notfoundPhone", null, locale);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messages + phoneNumber);
         }
     }
 
 
     @GetMapping("/getEmail/{email}")
-    public ResponseEntity<String> checkUserByEmail(@PathVariable String email) {
+    public ResponseEntity<String> checkUserByEmail(HttpServletRequest request, @PathVariable String email) {
         Optional<User> user = userRepository.findByEmail(email);
+        String selectedLanguage = (String) request.getSession().getAttribute("language");
+        Locale locale = new Locale(selectedLanguage);
         if (user.isPresent()) {
             return ResponseEntity.ok("true");
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user not found with email " + email);
+            String messages = messageSource.getMessage("user.notfoundEmail", null, locale);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messages + email);
         }
     }
 }

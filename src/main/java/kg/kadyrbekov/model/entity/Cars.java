@@ -1,13 +1,11 @@
 package kg.kadyrbekov.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import kg.kadyrbekov.model.User;
+import kg.kadyrbekov.model.enums.CarsStatus;
 import kg.kadyrbekov.model.enums.Category;
 import kg.kadyrbekov.model.enums.City;
-import kg.kadyrbekov.model.enums.StarsRating;
-import kg.kadyrbekov.model.enums.CarsStatus;
-import lombok.*;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -78,7 +76,6 @@ public class Cars {
     @Enumerated(EnumType.STRING)
     private CarsStatus carsStatus;
 
-    @JsonIgnore
     @ApiModelProperty(hidden = true)
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cars")
     private List<Image> images;

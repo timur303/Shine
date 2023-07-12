@@ -30,7 +30,7 @@ public class ReviewService {
     private final CarsRepository carsRepository;
 
     public ReviewResponse create(ReviewRequest request, Long carsID) throws NotFoundException {
-        User user = getAuthentication();
+        User user = getAuthenticatedUser();
         Cars cars = carsRepository.findById(carsID)
                 .orElseThrow(() -> new NotFoundException("Car with id not found"));
         Review review = mapToEntity(request);
@@ -59,10 +59,11 @@ public class ReviewService {
         return reviewRepository.findAll();
     }
 
-    public User getAuthentication() {
+
+    public User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        return userRepository.findByEmail(email).get();
+        return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found!"));
     }
 
 
