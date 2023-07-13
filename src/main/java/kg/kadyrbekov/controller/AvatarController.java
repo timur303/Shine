@@ -42,7 +42,12 @@ public class AvatarController {
     @PostMapping("/uploadAvatar")
     public ResponseEntity<?> uploadAvatar(HttpServletRequest request, @RequestPart("file") MultipartFile file) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         try {
             User user = getAuthenticatedUser();
@@ -82,7 +87,12 @@ public class AvatarController {
     @PatchMapping("/updateAvatar/{avatarId}")
     public ResponseEntity<?> updateAvatar(HttpServletRequest request, @PathVariable Long avatarId, @RequestPart("file") MultipartFile file) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         try {
             Image image = imageRepository.findById(avatarId)
@@ -109,7 +119,12 @@ public class AvatarController {
     @DeleteMapping("/deleteAvatar/{avatarID}")
     public ResponseEntity<?> deleteAvatar(HttpServletRequest request, @PathVariable Long avatarID) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         try {
             String message = messageSource.getMessage("avatar.getID", null, locale);

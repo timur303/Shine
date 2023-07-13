@@ -74,7 +74,12 @@ public class CarsController {
         if (file12 != null) files.add(file12);
 
         String selectedLanguage = (String) servletRequest.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         try {
             CarsResponse response = carsService.createCar(request, files);
@@ -100,7 +105,12 @@ public class CarsController {
     @PatchMapping("/carUpdate/{id}")
     public ResponseEntity<?> updateCar(HttpServletRequest servletRequest, @PathVariable("id") Long id, CarsRequest request) {
         String selectedLanguage = (String) servletRequest.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         try {
             carsService.update(id, request);
@@ -129,7 +139,12 @@ public class CarsController {
     @PatchMapping("/giveStatus/{carId}")
     public ResponseEntity<?> giveCarStatus(HttpServletRequest servletRequest, @PathVariable("carId") Long carId, @RequestParam("status") CarsStatus status) {
         String selectedLanguage = (String) servletRequest.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         try {
             carsService.updateCarStatus(carId, status);
@@ -153,7 +168,12 @@ public class CarsController {
     @PostMapping("/cancelStatus/{carId}")
     public ResponseEntity<?> cancelCarStatus(HttpServletRequest request, @PathVariable("carId") Long carId) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         try {
             carsService.cancelCarStatus(carId);
@@ -177,7 +197,12 @@ public class CarsController {
     @DeleteMapping("deleteCar/{id}")
     public ResponseEntity<?> deleteCar(HttpServletRequest request, @PathVariable("id") Long id) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         try {
             carsService.deleteCar(id);

@@ -45,7 +45,12 @@ public class PostController {
     })
     public ResponseEntity<String> likeCar(HttpServletRequest request, @PathVariable Long carId) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         try {
             String messages = messageSource.getMessage("car.liked", null, locale);
@@ -105,7 +110,12 @@ public class PostController {
     })
     public ResponseEntity<?> getCarById(HttpServletRequest request, @PathVariable("id") Long id) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         try {
             CarsResponse response = carsService.getByIdCars(id);
@@ -127,7 +137,12 @@ public class PostController {
     })
     public ResponseEntity<String> addCarToFavorites(HttpServletRequest request, @PathVariable Long carId) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         try {
             String messages = messageSource.getMessage("favorite.added", null, locale);
@@ -151,7 +166,12 @@ public class PostController {
     })
     public ResponseEntity<String> removeCarFromFavorites(HttpServletRequest request, @PathVariable Long carId) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         try {
             String messages = messageSource.getMessage("favorite.remove", null, locale);
@@ -174,7 +194,12 @@ public class PostController {
     })
     public ResponseEntity<String> cancelLikeCar(HttpServletRequest request, @PathVariable Long carId) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         try {
             String messages = messageSource.getMessage("car.cancel.liked", null, locale);
