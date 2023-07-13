@@ -62,7 +62,13 @@ public class AuthController {
     @PostMapping("login")
     public ResponseEntity<LoginResponse> getLogin(HttpServletRequest request, @RequestBody LoginRequest loginRequest) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru"); //
+        }
+
 
         try {
             UserDetails userDetails = null;
@@ -131,7 +137,13 @@ public class AuthController {
     @PostMapping("/registration")
     public ResponseEntity<UserResponse> registerUser(HttpServletRequest request, @RequestBody UserRequest userRequest) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
+
 
 
         try {
