@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+import java.util.Optional;
+
 import static java.lang.String.format;
 
 @Service
@@ -21,29 +23,17 @@ public class UserServiceImpl implements UserDetailsService {
 
     @Override
     @Transactional
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        User user;
-//        if (username.matches(".*@.*")) {
-//            kg.kadyrbekov.model.User userEntity = userRepository.findByEmail(username)
-//                    .orElseThrow(() -> new UsernameNotFoundException(format("User with email - %s, not found", username)));
-//            // создать объект UserDetails на основе userEntity и вернуть его
-//            user = new User(userEntity.getUsername(), userEntity.getPassword(), userEntity.getAuthorities());
-//        } else {
-//            kg.kadyrbekov.model.User userEntity = userRepository.findByPhoneNumber(username)
-//                    .orElseThrow(() -> new UsernameNotFoundException(format("User with phone number - %s, not found", username)));
-//            // создать объект UserDetails на основе userEntity и вернуть его
-//            user = new User(userEntity.getUsername(), userEntity.getPassword(), userEntity.getAuthorities());
-//        }
-//        return user;
-//    }
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username).get();
+        Optional<User> userByEmail = userRepository.findByEmail(username);
+        Optional<User> userByPhoneNumber = userRepository.findByPhoneNumber(username);
+
+        User user = userByEmail.orElseGet(() -> userByPhoneNumber.orElse(null));
+
         if (user != null) {
             return user;
         } else {
-            throw new UsernameNotFoundException(format("User with email - %s, not found", username));
+            throw new UsernameNotFoundException(String.format("User with email or phone number - %s, not found", username));
         }
 
     }
-
 }

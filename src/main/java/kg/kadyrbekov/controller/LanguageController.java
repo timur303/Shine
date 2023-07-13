@@ -20,7 +20,7 @@ public class LanguageController {
     })
     @PostMapping("/select-language")
     public String selectLanguage(
-            @ApiParam(value = "Language code (en, ru)", required = true) @RequestParam("lang") String lang,
+            @ApiParam(value = "Language code (en, ru)", required = true) @RequestParam(value = "lang", required = false) String lang,
             HttpSession session
     ) {
         if (lang == null || lang.isEmpty()) {
@@ -29,6 +29,7 @@ public class LanguageController {
         session.setAttribute("language", lang);
         return "OK";
     }
+
 }
 
 
