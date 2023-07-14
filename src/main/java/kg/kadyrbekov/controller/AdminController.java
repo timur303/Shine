@@ -56,7 +56,12 @@ public class AdminController {
 
     public ResponseEntity<?> getUserByID(HttpServletRequest request, @PathVariable Long userId) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         try {
             UserDTO user = adminService.getUserByID(userId);
@@ -116,7 +121,12 @@ public class AdminController {
     @GetMapping("/getPhoneNumber/{phoneNumber}")
     public ResponseEntity<String> checkUserByPhoneNumber(HttpServletRequest request, @PathVariable String phoneNumber) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
 
         Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
         if (user.isPresent()) {
@@ -132,7 +142,12 @@ public class AdminController {
     public ResponseEntity<String> checkUserByEmail(HttpServletRequest request, @PathVariable String email) {
         Optional<User> user = userRepository.findByEmail(email);
         String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale = new Locale(selectedLanguage);
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
         if (user.isPresent()) {
             return ResponseEntity.ok("true");
         } else {
