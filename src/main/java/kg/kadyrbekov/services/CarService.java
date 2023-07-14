@@ -124,8 +124,50 @@ public class CarService {
     }
 
 
-    public List<Cars> getAllCars() {
-        return carsRepository.findAll();
+    public List<CarsResponse> getAllCars() {
+        List<Cars> carsList = carsRepository.findAll();
+        List<CarsResponse> responseList = new ArrayList<>();
+
+        for (Cars cars : carsList) {
+            CarsResponse response = new CarsResponse();
+            response.setId(cars.getId());
+            response.setBody(cars.getBody());
+            response.setColor(cars.getColor());
+            response.setBrand(cars.getBrand());
+            response.setAccounting(cars.getAccounting());
+            response.setAvailability(cars.getAvailability());
+            response.setCondition(cars.getCondition());
+            response.setCurrency(cars.getCurrency());
+            response.setDescription(cars.getDescription());
+            response.setYearOfIssue(cars.getYearOfIssue());
+            response.setTransmission(cars.getTransmission());
+            response.setSteeringWheel(cars.getSteeringWheel());
+            response.setPrice(cars.getPrice());
+            response.setModel(cars.getModel());
+            response.setMileage(cars.getMileage());
+            response.setExchange(cars.getExchange());
+            response.setEngine(cars.getEngine());
+            response.setDriveUnit(cars.getDriveUnit());
+            response.setDateOfCreated(LocalDateTime.now());
+            response.setCategory(cars.getCategory());
+            response.setCarsStatus(cars.getCarsStatus());
+            response.setCity(cars.getCity());
+            response.setStateCarNumber(cars.getStateCarNumber());
+
+            if (!cars.getImages().isEmpty()) {
+                List<String> imageUrls = new ArrayList<>();
+                for (Image image : cars.getImages()) {
+                    imageUrls.add(image.getUrl());
+                }
+                response.setImages(String.join(", ", imageUrls));
+            } else {
+                response.setImages("No images available");
+            }
+
+            responseList.add(response);
+        }
+
+        return responseList;
     }
 
     @Transactional

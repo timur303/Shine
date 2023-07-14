@@ -15,10 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 @RestController
 @RequiredArgsConstructor
@@ -88,20 +87,14 @@ public class PostController {
     @ApiOperation("Get all cars")
     @ApiResponse(code = 200, message = "Successfully retrieved all cars")
     public ResponseEntity<List<CarsResponse>> getAllCars() {
-        List<Cars> carsList = carsService.getAllCars();
-        List<CarsResponse> responseList = new ArrayList<>();
+        List<CarsResponse> carsList = carsService.getAllCars();
 
-        for (Cars car : carsList) {
-            CarsResponse response = new CarsResponse();
-            response.setId(car.getId());
-            response.setBrand(car.getBrand());
-
-            responseList.add(response);
+        if (carsList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return ResponseEntity.ok(responseList);
+        return ResponseEntity.ok(carsList);
     }
-
     @GetMapping("/getCarByID/{id}")
     @ApiOperation("Get car by ID")
     @ApiResponses({
