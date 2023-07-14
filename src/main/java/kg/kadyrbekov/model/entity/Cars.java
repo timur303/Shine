@@ -5,6 +5,7 @@ import kg.kadyrbekov.model.User;
 import kg.kadyrbekov.model.enums.CarsStatus;
 import kg.kadyrbekov.model.enums.Category;
 import kg.kadyrbekov.model.enums.City;
+import kg.kadyrbekov.model.enums.carsenum.*;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -26,44 +27,48 @@ public class Cars {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int YearOfIssue;
-
-    private String mileage;
-
-    private String body;
-
-    private String color;
-
-    private String engine;
-
-    private String transmission;
-
-    private String driveUnit;
-
-    private String steeringWheel;
-
-    private String condition;
-
-    private String customs;
-
-    private String exchange;
-
-    private String availability;
-
-    private String regionCityOfSale;
-
-    private String accounting;
-
-    private String description;
-
     private String brand;
 
     private String model;
 
-    private double price;
+    @Enumerated(EnumType.STRING)
+    private Years YearOfIssue;
 
-    @Column(nullable = false)
-    private int likes;
+    private String mileage;
+
+    @Enumerated(EnumType.STRING)
+    private BodyType body;
+
+    @Enumerated(EnumType.STRING)
+    private Color color;
+
+    @Enumerated(EnumType.STRING)
+    private EngineType engine;
+
+    @Enumerated(EnumType.STRING)
+    private TransmissionType transmission;
+
+    @Enumerated(EnumType.STRING)
+    private DriveType driveUnit;
+
+    @Enumerated(EnumType.STRING)
+    private SteeringWheelPosition steeringWheel;
+
+    @Enumerated(EnumType.STRING)
+    private State condition;
+
+    @Enumerated(EnumType.STRING)
+    private ExchangeCapability exchange;
+
+    @Enumerated(EnumType.STRING)
+    private Account accounting;
+
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    private AvailabilityStatus availability;
+
+    private String stateCarNumber;
 
     private LocalDateTime dateOfCreated;
 
@@ -80,14 +85,21 @@ public class Cars {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cars")
     private List<Image> images;
 
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
+
+    private double price;
+
     @OneToMany(mappedBy = "car")
     private List<Review> reviews;
+
+    @Column(nullable = false)
+    private int likes;
 
     @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "user_id")
     private User user;
     private Long previewImageId;
-
     @Transient
     Long userId;
 

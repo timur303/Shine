@@ -38,7 +38,7 @@ public class CarService {
     private final Cloudinary cloudinary;
 
     @Transactional
-    public CarsResponse createCar( CarsRequest request, List<MultipartFile> files) throws NotFoundException, IOException {
+    public CarsResponse createCar(CarsRequest request, List<MultipartFile> files) throws NotFoundException, IOException {
         Cars cars = mapToEntity(request);
         User user = getAuthenticatedUser();
         List<Image> images = new ArrayList<>();
@@ -101,18 +101,17 @@ public class CarService {
         cars.setAccounting(request.getAccounting());
         cars.setCondition(request.getCondition());
         cars.setAvailability(request.getAvailability());
-        cars.setCustoms(request.getCustoms());
         cars.setYearOfIssue(request.getYearOfIssue());
         cars.setTransmission(request.getTransmission());
         cars.setSteeringWheel(request.getSteeringWheel());
         cars.setPrice(request.getPrice());
         cars.setModel(request.getModel());
-        cars.setRegionCityOfSale(request.getRegionCityOfSale());
         cars.setMileage(request.getMileage());
         cars.setExchange(request.getExchange());
         cars.setEngine(request.getEngine());
         cars.setDriveUnit(request.getDriveUnit());
-
+        cars.setStateCarNumber(request.getStateCarNumber());
+        cars.setCurrency(request.getCurrency());
         carsRepository.save(cars);
 
         return carsResponse(cars);
@@ -141,12 +140,11 @@ public class CarService {
         response.setAccounting(cars.getAccounting());
         response.setAvailability(cars.getAvailability());
         response.setCondition(cars.getCondition());
-        response.setCustoms(cars.getCustoms());
+        response.setCurrency(cars.getCurrency());
         response.setDescription(cars.getDescription());
         response.setYearOfIssue(cars.getYearOfIssue());
         response.setTransmission(cars.getTransmission());
         response.setSteeringWheel(cars.getSteeringWheel());
-        response.setRegionCityOfSale(cars.getRegionCityOfSale());
         response.setPrice(cars.getPrice());
         response.setModel(cars.getModel());
         response.setMileage(cars.getMileage());
@@ -157,6 +155,7 @@ public class CarService {
         response.setCategory(cars.getCategory());
         response.setCarsStatus(cars.getCarsStatus());
         response.setCity(cars.getCity());
+        response.setStateCarNumber(cars.getStateCarNumber());
 //        response.setImages(cars.getImages().get(0).getUrl());
 
         if (!cars.getImages().isEmpty()) {
@@ -204,12 +203,11 @@ public class CarService {
         cars.setAccounting(request.getAccounting());
         cars.setAvailability(request.getAvailability());
         cars.setCondition(request.getCondition());
-        cars.setCustoms(request.getCustoms());
+        cars.setCurrency(request.getCurrency());
         cars.setTransmission(request.getTransmission());
         cars.setYearOfIssue(request.getYearOfIssue());
 //        cars.setReviews(request.getReviews());
         cars.setSteeringWheel(request.getSteeringWheel());
-        cars.setRegionCityOfSale(request.getRegionCityOfSale());
         cars.setPrice(request.getPrice());
 //        cars.setImages(request.getImages());
         cars.setModel(request.getModel());
@@ -221,6 +219,7 @@ public class CarService {
         cars.setCity(request.getCity());
         cars.setCarsStatus(request.getCarsStatus());
         cars.setDateOfCreated(LocalDateTime.now());
+        cars.setStateCarNumber(request.getStateCarNumber());
         return cars;
     }
 
@@ -236,12 +235,11 @@ public class CarService {
         response.setAccounting(cars.getAccounting());
         response.setAvailability(cars.getAvailability());
         response.setCondition(cars.getCondition());
-        response.setCustoms(cars.getCustoms());
+        response.setCurrency(cars.getCurrency());
         response.setDescription(cars.getDescription());
         response.setYearOfIssue(cars.getYearOfIssue());
         response.setTransmission(cars.getTransmission());
         response.setSteeringWheel(cars.getSteeringWheel());
-        response.setRegionCityOfSale(cars.getRegionCityOfSale());
         response.setPrice(cars.getPrice());
 //        response.setImages(cars.getImages());
         response.setModel(cars.getModel());
@@ -253,6 +251,7 @@ public class CarService {
         response.setCategory(cars.getCategory());
         response.setCarsStatus(cars.getCarsStatus());
         response.setCity(cars.getCity());
+        response.setStateCarNumber(cars.getStateCarNumber());
         return response;
     }
 
@@ -265,7 +264,8 @@ public class CarService {
                 .brand(cars.getBrand())
                 .color(cars.getColor())
                 .condition(cars.getCondition())
-                .customs(cars.getCustoms())
+                .stateCarNumber(cars.getStateCarNumber())
+                .currency(cars.getCurrency())
                 .description(cars.getDescription())
                 .driveUnit(cars.getDriveUnit())
                 .engine(cars.getEngine())
@@ -276,7 +276,6 @@ public class CarService {
                 .steeringWheel(cars.getSteeringWheel())
                 .transmission(cars.getTransmission())
                 .YearOfIssue(cars.getYearOfIssue())
-                .regionCityOfSale(cars.getRegionCityOfSale())
                 .model(cars.getModel())
 //                .reviews(cars.getReviews())
 //                .userId(cars.getUserId())

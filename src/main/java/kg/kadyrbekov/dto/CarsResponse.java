@@ -1,16 +1,13 @@
 package kg.kadyrbekov.dto;
 
-import kg.kadyrbekov.model.entity.Image;
 import kg.kadyrbekov.model.enums.CarsStatus;
 import kg.kadyrbekov.model.enums.Category;
 import kg.kadyrbekov.model.enums.City;
+import kg.kadyrbekov.model.enums.carsenum.*;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -20,49 +17,72 @@ import java.util.stream.Collectors;
 @Builder
 public class CarsResponse {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private int YearOfIssue;
-
-    private String mileage;
-
-    private String body;
-
-    private String color;
-
-    private String engine;
-
-    private String transmission;
-
-    private String driveUnit;
-
-    private String steeringWheel;
-
-    private String condition;
-
-    private String customs;
-
-    private String exchange;
-
-    private String availability;
-
-    private String regionCityOfSale;
-
-    private String accounting;
-
-    private String description;
 
     private String brand;
 
     private String model;
 
+    @Enumerated(EnumType.STRING)
+    private Years YearOfIssue;
+
+    private String mileage;
+
+    @Enumerated(EnumType.STRING)
+    private BodyType body;
+
+    @Enumerated(EnumType.STRING)
+    private Color color;
+
+    @Enumerated(EnumType.STRING)
+    private EngineType engine;
+
+    @Enumerated(EnumType.STRING)
+    private TransmissionType transmission;
+
+    @Enumerated(EnumType.STRING)
+    private DriveType driveUnit;
+
+    @Enumerated(EnumType.STRING)
+    private SteeringWheelPosition steeringWheel;
+
+    @Enumerated(EnumType.STRING)
+    private State condition;
+
+    @Enumerated(EnumType.STRING)
+    private ExchangeCapability exchange;
+
+    @Enumerated(EnumType.STRING)
+    private Account accounting;
+
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    private AvailabilityStatus availability;
+
+
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
+
     private double price;
 
-    private LocalDateTime dateOfCreated;
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
+    @Enumerated(EnumType.STRING)
+    private City city;
+
+    private String stateCarNumber;
+
+    @Enumerated(EnumType.STRING)
+    private CarsStatus carsStatus;
     private String images;
+
+
+    private LocalDateTime dateOfCreated;
 
     public String getImages() {
         return images;
@@ -71,15 +91,6 @@ public class CarsResponse {
     public void setImages(String images) {
         this.images = images;
     }
-
-    @Enumerated(EnumType.STRING)
-    private Category category;
-
-    @Enumerated(EnumType.STRING)
-    private City city;
-
-    @Enumerated(EnumType.STRING)
-    private CarsStatus carsStatus;
 
 
 }
