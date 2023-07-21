@@ -83,6 +83,8 @@ public class CarsResponse {
 
     private int likes;
 
+    private String engineCapacity;
+
     private LocalDateTime dateOfCreated;
 
     public String getImages() {
@@ -92,7 +94,6 @@ public class CarsResponse {
     public void setImages(String images) {
         this.images = images;
     }
-
 
 
 }

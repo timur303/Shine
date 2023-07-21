@@ -73,4 +73,6 @@ public class CarsRequest {
     @Enumerated(EnumType.STRING)
     private CarsStatus carsStatus;
 
+    private String engineCapacity;
+
 }

@@ -81,6 +81,8 @@ public class Cars {
     @Enumerated(EnumType.STRING)
     private CarsStatus carsStatus;
 
+    private String engineCapacity;
+
     @ApiModelProperty(hidden = true)
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cars")
     private List<Image> images;
@@ -95,6 +97,7 @@ public class Cars {
 
     @Column(nullable = false)
     private int likes;
+
 
     @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "user_id")

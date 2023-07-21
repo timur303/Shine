@@ -99,6 +99,7 @@ public class CarService {
         cars.setBrand(request.getBrand());
         cars.setColor(request.getColor());
         cars.setAccounting(request.getAccounting());
+        cars.setEngineCapacity(request.getEngineCapacity());
         cars.setCondition(request.getCondition());
         cars.setAvailability(request.getAvailability());
         cars.setYearOfIssue(request.getYearOfIssue());
@@ -131,6 +132,7 @@ public class CarService {
         for (Cars cars : carsList) {
             CarsResponse response = new CarsResponse();
             response.setId(cars.getId());
+            response.setEngineCapacity(cars.getEngineCapacity());
             response.setBody(cars.getBody());
             response.setColor(cars.getColor());
             response.setBrand(cars.getBrand());
@@ -179,6 +181,7 @@ public class CarService {
         response.setBody(cars.getBody());
         response.setColor(cars.getColor());
         response.setBrand(cars.getBrand());
+        response.setEngineCapacity(cars.getEngineCapacity());
         response.setAccounting(cars.getAccounting());
         response.setAvailability(cars.getAvailability());
         response.setCondition(cars.getCondition());
@@ -248,6 +251,7 @@ public class CarService {
         cars.setCondition(request.getCondition());
         cars.setCurrency(request.getCurrency());
         cars.setTransmission(request.getTransmission());
+        cars.setEngineCapacity(request.getEngineCapacity());
         cars.setYearOfIssue(request.getYearOfIssue());
 //        cars.setReviews(request.getReviews());
         cars.setSteeringWheel(request.getSteeringWheel());
@@ -273,6 +277,7 @@ public class CarService {
         CarsResponse response = new CarsResponse();
         response.setId(cars.getId());
         response.setBody(cars.getBody());
+        response.setEngineCapacity(cars.getEngineCapacity());
         response.setColor(cars.getColor());
         response.setBrand(cars.getBrand());
         response.setAccounting(cars.getAccounting());
@@ -315,6 +320,7 @@ public class CarService {
                 .exchange(cars.getExchange())
                 .mileage(cars.getMileage())
                 .price(cars.getPrice())
+                .engineCapacity(cars.getEngineCapacity())
 //                .images(cars.getImages())
                 .steeringWheel(cars.getSteeringWheel())
                 .transmission(cars.getTransmission())
