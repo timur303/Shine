@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -71,17 +72,9 @@ public class UserService {
     private UserResponse mapToResponse(User user) {
         return UserResponse.builder()
                 .id(user.getId())
-//                .role(user.getRole())
-//                .firstName(user.getFirstName())
-//                .lastName(user.getLastName())
-//                .phoneNumber(user.getPhoneNumber())
-//                .age(user.getAge())
-//                .email(user.getEmail())
-//                .password(user.getPassword())
                 .token(jwtTokenUtil.generateToken(user))
                 .build();
     }
-
 
 
     public User mapToEntity(UserRequest request) {
@@ -136,6 +129,11 @@ public class UserService {
         carsRepository.save(car);
     }
 
+    public List<Cars> getFavoriteCarsByUser() {
+        User user = getAuthenticatedUser();
+        return user.getFavoriteCars();
+    }
+
     public void removeCarFromFavorites(Long carId) throws NotFoundException {
         User user = getAuthenticatedUser();
         Cars car = carsRepository.findById(carId)
@@ -153,7 +151,6 @@ public class UserService {
         String email = authentication.getName();
         return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found!"));
     }
-
 
 
     public UserResponse updateProfile(UserRequest updatedUserRequest) {

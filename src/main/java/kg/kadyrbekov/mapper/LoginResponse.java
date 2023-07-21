@@ -11,8 +11,6 @@ public class LoginResponse {
 
     private String message;
 
-//    private String authorities;
-
     private Long userId;
 
 

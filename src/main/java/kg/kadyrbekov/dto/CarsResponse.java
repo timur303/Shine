@@ -81,6 +81,7 @@ public class CarsResponse {
     private CarsStatus carsStatus;
     private String images;
 
+    private int likes;
 
     private LocalDateTime dateOfCreated;
 
@@ -91,6 +92,7 @@ public class CarsResponse {
     public void setImages(String images) {
         this.images = images;
     }
+
 
 
 }

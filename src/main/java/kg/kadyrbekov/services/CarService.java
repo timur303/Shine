@@ -198,6 +198,7 @@ public class CarService {
         response.setCarsStatus(cars.getCarsStatus());
         response.setCity(cars.getCity());
         response.setStateCarNumber(cars.getStateCarNumber());
+        response.setLikes(cars.getLikes());
 //        response.setImages(cars.getImages().get(0).getUrl());
 
         if (!cars.getImages().isEmpty()) {

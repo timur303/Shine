@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/post")
@@ -95,6 +96,7 @@ public class PostController {
 
         return ResponseEntity.ok(carsList);
     }
+
     @GetMapping("/getCarByID/{id}")
     @ApiOperation("Get car by ID")
     @ApiResponses({
@@ -175,6 +177,17 @@ public class PostController {
         } catch (Exception e) {
             String messages = messageSource.getMessage("favorite.remove.failed", null, locale);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messages);
+        }
+    }
+
+
+    @GetMapping("/getAllFavorites")
+    public ResponseEntity<List<Cars>> getFavoriteCars() {
+        List<Cars> favoriteCars = userService.getFavoriteCarsByUser();
+        if (favoriteCars != null) {
+            return new ResponseEntity<>(favoriteCars, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
