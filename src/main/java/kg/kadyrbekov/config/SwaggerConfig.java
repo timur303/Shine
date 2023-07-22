@@ -22,7 +22,7 @@ public class SwaggerConfig {
         return SecurityContext.builder().securityReferences(defaultAuth()).build();
     }
 
-
+//
 
     private List<SecurityReference> defaultAuth() {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");

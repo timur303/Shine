@@ -72,6 +72,10 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<Cars> favoriteCars = new ArrayList<>();
 
+    public boolean isFavorites() {
+        return !favoriteCars.isEmpty();
+    }
+
     @OneToMany(mappedBy = "user")
     private List<UserCarView> userCarViews = new ArrayList<>();
 

@@ -73,6 +73,7 @@ public class UserService {
         return UserResponse.builder()
                 .id(user.getId())
                 .token(jwtTokenUtil.generateToken(user))
+                .role(user.getRole())
                 .build();
     }
 
@@ -133,6 +134,7 @@ public class UserService {
         User user = getAuthenticatedUser();
         return user.getFavoriteCars();
     }
+
 
     public void removeCarFromFavorites(Long carId) throws NotFoundException {
         User user = getAuthenticatedUser();

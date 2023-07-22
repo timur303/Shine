@@ -53,7 +53,6 @@ public class AdminController {
             @ApiResponse(code = 200, message = "Success ", response = UserDTO.class),
             @ApiResponse(code = 404, message = "User not found ", response = Error.class)
     })
-
     public ResponseEntity<?> getUserByID(HttpServletRequest request, @PathVariable Long userId) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
         Locale locale;
@@ -73,6 +72,16 @@ public class AdminController {
         }
     }
 
+
+    @GetMapping("/search")
+    public ResponseEntity<Optional<User>> searchUserByEmail(@RequestParam("email") String email) {
+        Optional<User> user = adminService.findByEmail(email);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @PostMapping("/manager")
     @ApiOperation("Assign Manager Role")

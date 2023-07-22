@@ -124,7 +124,6 @@ public class CarService {
         carsRepository.delete(car);
     }
 
-
     public List<CarsResponse> getAllCars() {
         List<Cars> carsList = carsRepository.findAll();
         List<CarsResponse> responseList = new ArrayList<>();
@@ -155,7 +154,7 @@ public class CarService {
             response.setCarsStatus(cars.getCarsStatus());
             response.setCity(cars.getCity());
             response.setStateCarNumber(cars.getStateCarNumber());
-
+            response.setFavorites(cars.isFavorites());
             if (!cars.getImages().isEmpty()) {
                 List<String> imageUrls = new ArrayList<>();
                 for (Image image : cars.getImages()) {
@@ -202,6 +201,7 @@ public class CarService {
         response.setCity(cars.getCity());
         response.setStateCarNumber(cars.getStateCarNumber());
         response.setLikes(cars.getLikes());
+        response.setFavorites(cars.isFavorites());
 //        response.setImages(cars.getImages().get(0).getUrl());
 
         if (!cars.getImages().isEmpty()) {
@@ -300,6 +300,7 @@ public class CarService {
         response.setCarsStatus(cars.getCarsStatus());
         response.setCity(cars.getCity());
         response.setStateCarNumber(cars.getStateCarNumber());
+        response.setFavorites(cars.isFavorites());
         return response;
     }
 

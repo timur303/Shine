@@ -144,8 +144,6 @@ public class AuthController {
             locale = new Locale("ru");
         }
 
-
-
         try {
             if (StringUtils.isBlank(userRequest.getEmail()) || StringUtils.isBlank(userRequest.getPassword()) || StringUtils.isBlank(userRequest.getPhoneNumber())) {
                 String errorMessage = messageSource.getMessage("registration.invalid", null, locale);

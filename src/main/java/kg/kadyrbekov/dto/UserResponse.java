@@ -1,6 +1,10 @@
 package kg.kadyrbekov.dto;
 
+import kg.kadyrbekov.model.enums.Role;
 import lombok.*;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Getter
 @NoArgsConstructor
@@ -14,6 +18,9 @@ public class UserResponse {
     private String token;
 
     private String errorMessage;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
 
 }

@@ -1,5 +1,7 @@
 package kg.kadyrbekov.dto;
 
+import kg.kadyrbekov.model.User;
+import kg.kadyrbekov.model.entity.Cars;
 import kg.kadyrbekov.model.enums.CarsStatus;
 import kg.kadyrbekov.model.enums.Category;
 import kg.kadyrbekov.model.enums.City;
@@ -8,13 +10,14 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @ToString
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CarsResponse {
 
 
@@ -87,9 +90,7 @@ public class CarsResponse {
 
     private LocalDateTime dateOfCreated;
 
-    public String getImages() {
-        return images;
-    }
+    private boolean isFavorites;
 
     public void setImages(String images) {
         this.images = images;

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -45,6 +46,10 @@ public class AdminService {
             user.setRole(Role.MANAGER);
             userRepository.save(user);
         }
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public UserResponse createUser(UserRequest userRequest, Role role) {
