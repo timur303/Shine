@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -129,55 +130,64 @@ public class CarService {
         List<Cars> carsList = carsRepository.findAll();
         List<CarsResponse> responseList = new ArrayList<>();
 
-        for (Cars cars : carsList) {
-            CarsResponse response = new CarsResponse();
-            response.setId(cars.getId());
-            response.setEngineCapacity(cars.getEngineCapacity());
-            response.setBody(cars.getBody());
-            response.setColor(cars.getColor());
-            response.setBrand(cars.getBrand());
-            response.setAccounting(cars.getAccounting());
-            response.setAvailability(cars.getAvailability());
-            response.setCondition(cars.getCondition());
-            response.setCurrency(cars.getCurrency());
-            response.setDescription(cars.getDescription());
-            response.setYearOfIssue(cars.getYearOfIssue());
-            response.setTransmission(cars.getTransmission());
-            response.setSteeringWheel(cars.getSteeringWheel());
-            response.setPrice(cars.getPrice());
-            response.setModel(cars.getModel());
-            response.setMileage(cars.getMileage());
-            response.setExchange(cars.getExchange());
-            response.setEngine(cars.getEngine());
-            response.setDriveUnit(cars.getDriveUnit());
-            response.setDateOfCreated(LocalDateTime.now());
-            response.setCategory(cars.getCategory());
-            response.setCarsStatus(cars.getCarsStatus());
-            response.setCity(cars.getCity());
-            response.setStateCarNumber(cars.getStateCarNumber());
-            boolean isFavorite = user.getFavoriteCars().contains(cars);
-            response.setFavorites(isFavorite);
-            if (!cars.getImages().isEmpty()) {
-                List<String> imageUrls = new ArrayList<>();
-                for (Image image : cars.getImages()) {
-                    imageUrls.add(image.getUrl());
+        if (user != null) {
+            List<Long> favoriteCarIds = user.getFavoriteCars().stream()
+                    .map(Cars::getId)
+                    .collect(Collectors.toList());
+
+            for (Cars cars : carsList) {
+                CarsResponse response = new CarsResponse();
+                response.setId(cars.getId());
+                response.setEngineCapacity(cars.getEngineCapacity());
+                response.setBody(cars.getBody());
+                response.setColor(cars.getColor());
+                response.setBrand(cars.getBrand());
+                response.setAccounting(cars.getAccounting());
+                response.setAvailability(cars.getAvailability());
+                response.setCondition(cars.getCondition());
+                response.setCurrency(cars.getCurrency());
+                response.setDescription(cars.getDescription());
+                response.setYearOfIssue(cars.getYearOfIssue());
+                response.setTransmission(cars.getTransmission());
+                response.setSteeringWheel(cars.getSteeringWheel());
+                response.setPrice(cars.getPrice());
+                response.setModel(cars.getModel());
+                response.setMileage(cars.getMileage());
+                response.setExchange(cars.getExchange());
+                response.setEngine(cars.getEngine());
+                response.setDriveUnit(cars.getDriveUnit());
+                response.setDateOfCreated(LocalDateTime.now());
+                response.setCategory(cars.getCategory());
+                response.setCarsStatus(cars.getCarsStatus());
+                response.setCity(cars.getCity());
+                response.setStateCarNumber(cars.getStateCarNumber());
+                boolean isFavorite = favoriteCarIds.contains(cars.getId());
+                response.setFavorites(isFavorite);
+                if (!cars.getImages().isEmpty()) {
+                    List<String> imageUrls = new ArrayList<>();
+                    for (Image image : cars.getImages()) {
+                        imageUrls.add(image.getUrl());
+                    }
+                    response.setImages(String.join(", ", imageUrls));
+                } else {
+                    response.setImages("No images available");
                 }
-                response.setImages(String.join(", ", imageUrls));
-            } else {
-                response.setImages("No images available");
+
+                responseList.add(response);
             }
 
-            responseList.add(response);
         }
 
         return responseList;
     }
+
 
     @Transactional
     public CarsResponse getByIdCars(Long id) throws NotFoundException {
         User user = getAuthenticatedUser();
         Cars cars = carsRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Car with id not found: " + id));
+
         CarsResponse response = new CarsResponse();
         response.setId(cars.getId());
         response.setBody(cars.getBody());
@@ -204,22 +214,28 @@ public class CarService {
         response.setCity(cars.getCity());
         response.setStateCarNumber(cars.getStateCarNumber());
         response.setLikes(cars.getLikes());
-        boolean isFavorite = user.getFavoriteCars().contains(cars);
-        response.setFavorites(isFavorite);
+        if (user != null) {
+            List<Long> favoriteCarIds = user.getFavoriteCars().stream()
+                    .map(Cars::getId)
+                    .collect(Collectors.toList());
+
+            boolean isFavorite = favoriteCarIds.contains(cars.getId());
+            response.setFavorites(isFavorite);
 //        response.setImages(cars.getImages().get(0).getUrl());
 
-        if (!cars.getImages().isEmpty()) {
-            response.setImages(cars.getImages().get(0).getUrl());
-        } else {
-            response.setImages("jok");
-        }
+            if (!cars.getImages().isEmpty()) {
+                response.setImages(cars.getImages().get(0).getUrl());
+            } else {
+                response.setImages("jok");
+            }
 
-        List<String> imageUrls = new ArrayList<>();
-        for (Image image : cars.getImages()) {
-            imageUrls.add(image.getUrl());
-        }
-        response.setImages(String.join(", ", imageUrls));
+            List<String> imageUrls = new ArrayList<>();
+            for (Image image : cars.getImages()) {
+                imageUrls.add(image.getUrl());
+            }
+            response.setImages(String.join(", ", imageUrls));
 
+        }
         return response;
 
     }
