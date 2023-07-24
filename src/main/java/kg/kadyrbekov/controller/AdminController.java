@@ -148,8 +148,7 @@ public class AdminController {
 
 
     @GetMapping("/getEmail/{email}")
-    public ResponseEntity<String> checkUserByEmail(HttpServletRequest request, @PathVariable String email) {
-        Optional<User> user = userRepository.findByEmail(email);
+    public ResponseEntity<?> getUserByEmail(HttpServletRequest request, @PathVariable String email) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
         Locale locale;
         if (selectedLanguage != null) {
@@ -157,11 +156,15 @@ public class AdminController {
         } else {
             locale = new Locale("ru");
         }
-        if (user.isPresent()) {
-            return ResponseEntity.ok("true");
-        } else {
-            String messages = messageSource.getMessage("user.notfoundEmail", null, locale);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messages + email);
+
+        try {
+            UserDTO user = adminService.getUserByEmail(email);
+            return ResponseEntity.ok(user);
+        } catch (NotFoundException e) {
+            String message = messageSource.getMessage("user.notfound", null, locale);
+            Error error = new Error(message);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
+
 }

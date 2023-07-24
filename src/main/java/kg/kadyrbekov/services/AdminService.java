@@ -110,5 +110,21 @@ public class AdminService {
 
         return response;
     }
+    public UserDTO getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User with id not found"));
+        UserDTO response = new UserDTO();
+        response.setAge(user.getAge());
+        response.setEmail(user.getEmail());
+        response.setId(user.getId());
+        if (user.getAvatar() != null) {
+            response.setAvatar(user.getAvatar().getUrl());
+        } else {
+            response.setAvatar(null);
+        }
+        response.setFirstName(user.getFirstName());
+        response.setLastName(user.getLastName());
+        response.setPhoneNumber(user.getPhoneNumber());
 
+        return response;
+    }
 }
