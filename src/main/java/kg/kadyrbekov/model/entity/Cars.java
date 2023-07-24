@@ -98,9 +98,6 @@ public class Cars {
     @Column(nullable = false)
     private int likes;
 
-    private boolean isFavorites;
-
-
     @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "user_id")
     private User user;

@@ -125,6 +125,7 @@ public class CarService {
     }
 
     public List<CarsResponse> getAllCars() {
+        User user = getAuthenticatedUser();
         List<Cars> carsList = carsRepository.findAll();
         List<CarsResponse> responseList = new ArrayList<>();
 
@@ -154,7 +155,8 @@ public class CarService {
             response.setCarsStatus(cars.getCarsStatus());
             response.setCity(cars.getCity());
             response.setStateCarNumber(cars.getStateCarNumber());
-            response.setFavorites(cars.isFavorites());
+            boolean isFavorite = user.getFavoriteCars().contains(cars);
+            response.setFavorites(isFavorite);
             if (!cars.getImages().isEmpty()) {
                 List<String> imageUrls = new ArrayList<>();
                 for (Image image : cars.getImages()) {
@@ -173,6 +175,7 @@ public class CarService {
 
     @Transactional
     public CarsResponse getByIdCars(Long id) throws NotFoundException {
+        User user = getAuthenticatedUser();
         Cars cars = carsRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Car with id not found: " + id));
         CarsResponse response = new CarsResponse();
@@ -201,7 +204,8 @@ public class CarService {
         response.setCity(cars.getCity());
         response.setStateCarNumber(cars.getStateCarNumber());
         response.setLikes(cars.getLikes());
-        response.setFavorites(cars.isFavorites());
+        boolean isFavorite = user.getFavoriteCars().contains(cars);
+        response.setFavorites(isFavorite);
 //        response.setImages(cars.getImages().get(0).getUrl());
 
         if (!cars.getImages().isEmpty()) {
@@ -300,7 +304,6 @@ public class CarService {
         response.setCarsStatus(cars.getCarsStatus());
         response.setCity(cars.getCity());
         response.setStateCarNumber(cars.getStateCarNumber());
-        response.setFavorites(cars.isFavorites());
         return response;
     }
 

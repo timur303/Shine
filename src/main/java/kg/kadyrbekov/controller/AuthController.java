@@ -66,7 +66,7 @@ public class AuthController {
         if (selectedLanguage != null) {
             locale = new Locale(selectedLanguage);
         } else {
-            locale = new Locale("ru"); //
+            locale = new Locale("ru");
         }
 
 
