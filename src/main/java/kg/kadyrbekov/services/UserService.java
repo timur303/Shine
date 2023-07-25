@@ -33,11 +33,11 @@ public class UserService {
 
 
     public UserResponse register(UserRequest userRequest) {
-        String email = userRequest.getEmail();
+        String number = userRequest.getPhoneNumber();
 
-        Optional<User> existingUserByEmail = userRepository.findByEmail(email);
+        Optional<User> existingUserByEmail = userRepository.findByPhoneNumber(number);
         if (existingUserByEmail.isPresent()) {
-            throw new UserRegistrationException("User with this email already exists.");
+            throw new UserRegistrationException("User with this number already exists.");
         }
 
         Optional<User> existingUserByPhoneNumber = userRepository.findByPhoneNumber(userRequest.getPhoneNumber());
@@ -48,12 +48,12 @@ public class UserService {
         User user = new User();
         user.setFirstName(userRequest.getFirstName());
         user.setLastName(userRequest.getLastName());
-        user.setEmail(email);
+        user.setEmail(userRequest.getEmail());
         user.setAge(userRequest.getAge());
         user.setPassword(encoder.encode(userRequest.getPassword()));
-        user.setPhoneNumber(userRequest.getPhoneNumber());
+        user.setPhoneNumber(number);
 
-        if (email.equals("beka@gmail.com")) {
+        if (number.equals("996507934333")) {
             if (isAdminAlreadyLoggedIn()) {
                 throw new RuntimeException("Admin is already logged in");
             } else {
