@@ -6,10 +6,12 @@ import kg.kadyrbekov.model.enums.City;
 import kg.kadyrbekov.model.enums.carsenum.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter

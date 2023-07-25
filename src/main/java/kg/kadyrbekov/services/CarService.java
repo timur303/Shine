@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,7 +39,6 @@ public class CarService {
 
     private final Cloudinary cloudinary;
 
-    @Transactional
     public CarsResponse createCar(CarsRequest request, List<MultipartFile> files) throws NotFoundException, IOException {
         Cars cars = mapToEntity(request);
         User user = getAuthenticatedUser();
@@ -163,14 +163,15 @@ public class CarService {
                 response.setStateCarNumber(cars.getStateCarNumber());
                 boolean isFavorite = favoriteCarIds.contains(cars.getId());
                 response.setFavorites(isFavorite);
-                if (!cars.getImages().isEmpty()) {
+
+                if (cars.getImages() != null && !cars.getImages().isEmpty()) {
                     List<String> imageUrls = new ArrayList<>();
                     for (Image image : cars.getImages()) {
                         imageUrls.add(image.getUrl());
                     }
-                    response.setImages(String.join(", ", imageUrls));
+                    response.setImages(imageUrls);
                 } else {
-                    response.setImages("No images available");
+                    response.setImages(Collections.singletonList("No images available"));
                 }
 
                 responseList.add(response);
@@ -223,17 +224,22 @@ public class CarService {
             response.setFavorites(isFavorite);
 //        response.setImages(cars.getImages().get(0).getUrl());
 
-            if (!cars.getImages().isEmpty()) {
-                response.setImages(cars.getImages().get(0).getUrl());
+            if (cars.getImages() != null && !cars.getImages().isEmpty()) {
+                List<String> imageUrls = new ArrayList<>();
+                for (Image image : cars.getImages()) {
+                    imageUrls.add(image.getUrl());
+                }
+                response.setImages(imageUrls);
             } else {
-                response.setImages("jok");
+                response.setImages(Collections.singletonList("No images available"));
             }
+
 
             List<String> imageUrls = new ArrayList<>();
             for (Image image : cars.getImages()) {
                 imageUrls.add(image.getUrl());
             }
-            response.setImages(String.join(", ", imageUrls));
+            response.setImages(Collections.singletonList(String.join(", ", imageUrls)));
 
         }
         return response;
@@ -287,6 +293,7 @@ public class CarService {
         cars.setCarsStatus(request.getCarsStatus());
         cars.setDateOfCreated(LocalDateTime.now());
         cars.setStateCarNumber(request.getStateCarNumber());
+
         return cars;
     }
 
@@ -320,6 +327,16 @@ public class CarService {
         response.setCarsStatus(cars.getCarsStatus());
         response.setCity(cars.getCity());
         response.setStateCarNumber(cars.getStateCarNumber());
+        if (cars.getImages() != null && !cars.getImages().isEmpty()) {
+            List<String> imageUrls = new ArrayList<>();
+            for (Image image : cars.getImages()) {
+                imageUrls.add(image.getUrl());
+            }
+            response.setImages(imageUrls);
+        } else {
+            response.setImages(Collections.singletonList("No"));
+        }
+
         return response;
     }
 
@@ -352,6 +369,7 @@ public class CarService {
                 .dateOfCreated(LocalDateTime.now())
                 .category(cars.getCategory())
                 .city(cars.getCity())
+
                 .build();
     }
 }

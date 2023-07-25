@@ -35,6 +35,7 @@ public class SwaggerConfig {
         return new ApiKey("JWT", "Authorization", "header");
     }
 
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)

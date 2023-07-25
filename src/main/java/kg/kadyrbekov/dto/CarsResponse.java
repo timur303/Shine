@@ -1,5 +1,6 @@
 package kg.kadyrbekov.dto;
 
+import kg.kadyrbekov.exception.Error;
 import kg.kadyrbekov.model.User;
 import kg.kadyrbekov.model.entity.Cars;
 import kg.kadyrbekov.model.enums.CarsStatus;
@@ -82,7 +83,7 @@ public class CarsResponse {
 
     @Enumerated(EnumType.STRING)
     private CarsStatus carsStatus;
-    private String images;
+    private List<String> images;
 
     private int likes;
 
@@ -92,9 +93,12 @@ public class CarsResponse {
 
     private boolean isFavorites;
 
-    public void setImages(String images) {
-        this.images = images;
+    private Error error;
+
+    public CarsResponse(Error error) {
+        this.error = error;
     }
+
 
 
 }
