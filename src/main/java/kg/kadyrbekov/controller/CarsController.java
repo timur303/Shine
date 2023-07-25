@@ -44,7 +44,7 @@ public class CarsController {
     })
     @PostMapping(value = "/carCreate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createCars(HttpServletRequest servletRequest,
-                                         CarsRequest request,
+                                        @RequestBody CarsRequest request,
                                         @RequestPart(value = "file1", required = false) MultipartFile file1,
                                         @RequestPart(value = "file2", required = false) MultipartFile file2,
                                         @RequestPart(value = "file3", required = false) MultipartFile file3,
