@@ -119,6 +119,11 @@ public class Cars {
         return likedUsers;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "car_id")
+    private List<Url> urls;
+
+
     public void addImageToCars(Image image) {
         image.setCars(this);
         images.add(image);

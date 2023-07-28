@@ -8,6 +8,7 @@ import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.model.User;
 import kg.kadyrbekov.model.entity.Cars;
 import kg.kadyrbekov.model.entity.Image;
+import kg.kadyrbekov.model.entity.Url;
 import kg.kadyrbekov.model.enums.CarsStatus;
 import kg.kadyrbekov.repositories.CarsRepository;
 import kg.kadyrbekov.repositories.ImagesRepository;
@@ -42,37 +43,26 @@ public class CarService {
     public CarsResponse createCar(CarsRequest request) throws NotFoundException, IOException {
         Cars cars = mapToEntity(request);
         User user = getAuthenticatedUser();
-        List<Image> images = new ArrayList<>();
 
-//        for (MultipartFile file : files) {
-//
-//            if (file.getSize() != 0) {
-//                Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-//                String imageUrl = (String) uploadResult.get("secure_url");
-//
-//                Image image = new Image();
-//                image.setUrl(imageUrl);
-//                image.setCars(cars);
-//                image.setSize(file.getSize());
-////                String imageUrl = (String) uploadResult.get("secure_url");
-////                image.setUrl(imageUrl);
-//                image.setName(file.getName());
-//                image.setOriginalFileName(file.getOriginalFilename());
-//                image.setContentType(file.getContentType());
-//                images.add(image);
-//            }
-//        }
+        List<Image> images = request.getImages().stream()
+                .map(url -> {
+                    Image image = new Image();
+                    image.setUrl(url);
+                    image.setCars(cars);
+                    return image;
+                })
+                .collect(Collectors.toList());
+
+        // Сохраняем список изображений в поле images сущности Cars
+        cars.setImages(images);
+
+        // Сохранение сущности Cars в базе данных
+        carsRepository.save(cars);
 
         cars.setUser(user);
         cars.setUserId(user.getId());
-//        Cars carsFromDB = carsRepository.save(cars);
-//
-//        if (!images.isEmpty()) {
-//            carsFromDB.setPreviewImageId(images.get(0).getId());
-//        }
 
         carsRepository.save(cars);
-//        imagesRepository.saveAll(images);
 
         return mapToResponse(cars);
     }
@@ -165,6 +155,7 @@ public class CarService {
                 boolean isFavorite = favoriteCarIds.contains(cars.getId());
                 response.setFavorites(isFavorite);
 
+
                 if (cars.getImages() != null && !cars.getImages().isEmpty()) {
                     List<String> imageUrls = new ArrayList<>();
                     for (Image image : cars.getImages()) {
@@ -223,7 +214,6 @@ public class CarService {
 
             boolean isFavorite = favoriteCarIds.contains(cars.getId());
             response.setFavorites(isFavorite);
-//        response.setImages(cars.getImages().get(0).getUrl());
 
             if (cars.getImages() != null && !cars.getImages().isEmpty()) {
                 List<String> imageUrls = new ArrayList<>();
@@ -328,15 +318,11 @@ public class CarService {
         response.setCarsStatus(cars.getCarsStatus());
         response.setCity(cars.getCity());
         response.setStateCarNumber(cars.getStateCarNumber());
-        if (cars.getImages() != null && !cars.getImages().isEmpty()) {
-            List<String> imageUrls = new ArrayList<>();
-            for (Image image : cars.getImages()) {
-                imageUrls.add(image.getUrl());
-            }
-            response.setImages(imageUrls);
-        } else {
-            response.setImages(Collections.singletonList("No"));
-        }
+
+        List<String> imageUrls = cars.getImages().stream()
+                .map(Image::getUrl)
+                .collect(Collectors.toList());
+        response.setImages(imageUrls);
 
         return response;
     }
