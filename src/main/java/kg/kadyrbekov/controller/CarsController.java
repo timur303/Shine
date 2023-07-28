@@ -76,7 +76,7 @@ public class CarsController {
             @ApiResponse(code = 404, message = "Resource not found")
     })
     @PatchMapping("/carUpdate/{id}")
-    public ResponseEntity<?> updateCar(HttpServletRequest servletRequest, @PathVariable("id") Long id, CarsRequest request) {
+    public ResponseEntity<?> updateCar(HttpServletRequest servletRequest, @PathVariable("id") Long id, @RequestBody CarsRequest request) {
         String selectedLanguage = (String) servletRequest.getSession().getAttribute("language");
         Locale locale;
         if (selectedLanguage != null) {

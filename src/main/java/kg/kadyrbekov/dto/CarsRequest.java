@@ -77,4 +77,6 @@ public class CarsRequest {
 
     private String engineCapacity;
 
+    private List<String> images;
+
 }
