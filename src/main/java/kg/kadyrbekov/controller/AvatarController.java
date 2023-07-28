@@ -74,6 +74,7 @@ public class AvatarController {
             String message = messageSource.getMessage("avatar.upload", null, locale);
             MessageInvalid messageInvalid = new MessageInvalid();
             messageInvalid.setMessages(message);
+            messageInvalid.setAvatarUrl(avatarUrl);
             return ResponseEntity.ok(messageInvalid);
         } catch (IOException e) {
             String message = messageSource.getMessage("avatar.failed", null, locale);
