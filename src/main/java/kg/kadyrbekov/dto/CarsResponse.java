@@ -83,6 +83,7 @@ public class CarsResponse {
 
     @Enumerated(EnumType.STRING)
     private CarsStatus carsStatus;
+
     private List<String> images;
 
     private int likes;
