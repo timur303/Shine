@@ -39,41 +39,42 @@ public class CarService {
 
     private final Cloudinary cloudinary;
 
-    public CarsResponse createCar(CarsRequest request, List<MultipartFile> files) throws NotFoundException, IOException {
+    public CarsResponse createCar(CarsRequest request) throws NotFoundException, IOException {
         Cars cars = mapToEntity(request);
         User user = getAuthenticatedUser();
         List<Image> images = new ArrayList<>();
 
-        for (MultipartFile file : files) {
-            if (file.getSize() != 0) {
-                Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-                String imageUrl = (String) uploadResult.get("secure_url");
-
-                Image image = new Image();
-                image.setUrl(imageUrl);
-                image.setCars(cars);
-                image.setSize(file.getSize());
+//        for (MultipartFile file : files) {
+//
+//            if (file.getSize() != 0) {
+//                Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
 //                String imageUrl = (String) uploadResult.get("secure_url");
+//
+//                Image image = new Image();
 //                image.setUrl(imageUrl);
-                image.setName(file.getName());
-                image.setOriginalFileName(file.getOriginalFilename());
-                image.setContentType(file.getContentType());
-                images.add(image);
-            }
-        }
+//                image.setCars(cars);
+//                image.setSize(file.getSize());
+////                String imageUrl = (String) uploadResult.get("secure_url");
+////                image.setUrl(imageUrl);
+//                image.setName(file.getName());
+//                image.setOriginalFileName(file.getOriginalFilename());
+//                image.setContentType(file.getContentType());
+//                images.add(image);
+//            }
+//        }
 
         cars.setUser(user);
         cars.setUserId(user.getId());
-        Cars carsFromDB = carsRepository.save(cars);
+//        Cars carsFromDB = carsRepository.save(cars);
+//
+//        if (!images.isEmpty()) {
+//            carsFromDB.setPreviewImageId(images.get(0).getId());
+//        }
 
-        if (!images.isEmpty()) {
-            carsFromDB.setPreviewImageId(images.get(0).getId());
-        }
+        carsRepository.save(cars);
+//        imagesRepository.saveAll(images);
 
-        carsRepository.save(carsFromDB);
-        imagesRepository.saveAll(images);
-
-        return mapToResponse(carsFromDB);
+        return mapToResponse(cars);
     }
 
 
