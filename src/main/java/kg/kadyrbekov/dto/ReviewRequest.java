@@ -19,11 +19,9 @@ public class ReviewRequest {
 
     private String comments;
 
-    private User user;
+//    private User user;
 
-    private Cars cars;
+//    private Cars cars;
 
-    @Transient
-    private Long carID;
 
 }

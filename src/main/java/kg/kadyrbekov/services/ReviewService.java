@@ -75,8 +75,8 @@ public class ReviewService {
     public Review mapToEntity(ReviewRequest request) {
         Review review = new Review();
         BeanUtils.copyProperties(request, review);
-        review.setUser(request.getUser());
-        review.setCar(request.getCars());
+//        review.setUser(request.getUser());
+//        review.setCar(request.getCars());
         return review;
     }
 
