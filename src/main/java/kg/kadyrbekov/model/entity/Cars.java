@@ -7,7 +7,6 @@ import kg.kadyrbekov.model.enums.Category;
 import kg.kadyrbekov.model.enums.City;
 import kg.kadyrbekov.model.enums.carsenum.*;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

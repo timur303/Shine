@@ -81,6 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/language/**").permitAll()
                 .antMatchers("/api/avatar/**").permitAll()
                 .antMatchers("/api/cars/**").permitAll()
+                .antMatchers("/api/imageCar/**").permitAll()
                 .antMatchers("/hello").permitAll()
                 .anyRequest()
                 .authenticated()

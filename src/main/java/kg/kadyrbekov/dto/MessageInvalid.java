@@ -10,4 +10,6 @@ import lombok.*;
 public class MessageInvalid {
 
     String messages;
+    String avatarUrl;
+
 }
