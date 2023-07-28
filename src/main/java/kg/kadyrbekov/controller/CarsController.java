@@ -45,7 +45,7 @@ public class CarsController {
     })
     @PostMapping("/carCreate")
     public ResponseEntity<CarsResponse> createCars(HttpServletRequest servletRequest,
-                                                   CarsRequest request,
+                                                   @RequestBody CarsRequest request,
                                                    @ApiParam(value = "List of images", required = true) @RequestParam(value = "images", required = false) List<MultipartFile> images) throws NotFoundException, IOException {
         String selectedLanguage = (String) servletRequest.getSession().getAttribute("language");
         Locale locale;
