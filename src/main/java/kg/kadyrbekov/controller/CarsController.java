@@ -54,7 +54,7 @@ public class CarsController {
         } else {
             locale = new Locale("ru");
         }
-
+//s
         try {
             CarsResponse response = carsService.createCar(request, images);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
