@@ -21,5 +21,6 @@ public class UserRequest {
 
     private boolean privacyPolicyAccepted;
 
+    private String avatarUrl;
 
 }

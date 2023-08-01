@@ -56,6 +56,7 @@ public class User implements UserDetails {
 
 //    private boolean privacyPolicyAccepted;
 
+    private String avatarUrl;
 
     @OneToMany(mappedBy = "user")
     private List<Review> reviews;

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import kg.kadyrbekov.dto.MessageInvalid;
 import kg.kadyrbekov.exception.AvatarException;
+import kg.kadyrbekov.exception.AvatarNotFoundException;
 import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.model.User;
 import kg.kadyrbekov.model.entity.Image;
@@ -13,7 +14,9 @@ import kg.kadyrbekov.repositories.ImagesRepository;
 import kg.kadyrbekov.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -112,6 +115,40 @@ public class AvatarController {
             String messages = messageSource.getMessage("update.failed", null, locale);
             MessageInvalid messageInvalid = new MessageInvalid();
             messageInvalid.setMessages(messages);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messageInvalid);
+        }
+    }
+
+    @GetMapping("/getAvatar")
+    public ResponseEntity<?> getAvatar(HttpServletRequest request) {
+        String selectedLanguage = (String) request.getSession().getAttribute("language");
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
+
+        try {
+            User user = getAuthenticatedUser();
+
+            if (user.getAvatar() == null) {
+                throw new AvatarNotFoundException("User does not have an avatar.");
+            }
+
+            Image avatar = user.getAvatar();
+            String avatarUrl = avatar.getUrl();
+
+            return ResponseEntity.ok(avatarUrl);
+        } catch (AvatarNotFoundException e) {
+            String message = messageSource.getMessage("avatar.notFound", null, locale);
+            MessageInvalid messageInvalid = new MessageInvalid();
+            messageInvalid.setMessages(message);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageInvalid);
+        } catch (Exception e) {
+            String message = messageSource.getMessage("avatar.failed", null, locale);
+            MessageInvalid messageInvalid = new MessageInvalid();
+            messageInvalid.setMessages(message);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messageInvalid);
         }
     }

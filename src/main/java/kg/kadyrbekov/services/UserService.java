@@ -167,6 +167,7 @@ public class UserService {
         existingUser.setEmail(updatedUserRequest.getEmail());
         existingUser.setAge(updatedUserRequest.getAge());
         existingUser.setPhoneNumber(updatedUserRequest.getPhoneNumber());
+        existingUser.setAvatarUrl(updatedUserRequest.getAvatarUrl());
         User updatedUser = userRepository.save(existingUser);
 
         return mapToResponse(updatedUser);
