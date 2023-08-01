@@ -9,7 +9,6 @@ import io.swagger.annotations.ApiResponses;
 import kg.kadyrbekov.dto.MessageInvalid;
 import kg.kadyrbekov.dto.UserDTO;
 import kg.kadyrbekov.exception.AvatarException;
-import kg.kadyrbekov.exception.AvatarNotFoundException;
 import kg.kadyrbekov.exception.Error;
 import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.model.User;
@@ -19,9 +18,7 @@ import kg.kadyrbekov.repositories.UserRepository;
 import kg.kadyrbekov.services.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -149,6 +148,30 @@ public class AvatarController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserDTO> userDTOs = new ArrayList<>();
+
+        for (User user : users) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setAge(user.getAge());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setId(user.getId());
+            if (user.getAvatar() != null) {
+                userDTO.setAvatarUrl(user.getAvatar().getUrl());
+            } else {
+                userDTO.setAvatarUrl(null);
+            }
+            userDTO.setFirstName(user.getFirstName());
+            userDTO.setLastName(user.getLastName());
+            userDTO.setPhoneNumber(user.getPhoneNumber());
+
+            userDTOs.add(userDTO);
+        }
+
+        return userDTOs;
+    }
+
 
     @DeleteMapping("/deleteAvatar/{avatarID}")
     public ResponseEntity<?> deleteAvatar(HttpServletRequest request, @PathVariable Long avatarID) {

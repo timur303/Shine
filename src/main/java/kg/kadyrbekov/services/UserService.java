@@ -33,11 +33,11 @@ public class UserService {
 
 
     public UserResponse register(UserRequest userRequest) {
-        String number = userRequest.getPhoneNumber();
+        String email = userRequest.getEmail();
 
-        Optional<User> existingUserByEmail = userRepository.findByPhoneNumber(number);
+        Optional<User> existingUserByEmail = userRepository.findByEmail(email);
         if (existingUserByEmail.isPresent()) {
-            throw new UserRegistrationException("User with this number already exists.");
+            throw new UserRegistrationException("User with this email already exists.");
         }
 
         Optional<User> existingUserByPhoneNumber = userRepository.findByPhoneNumber(userRequest.getPhoneNumber());
@@ -51,9 +51,9 @@ public class UserService {
         user.setEmail(userRequest.getEmail());
         user.setAge(userRequest.getAge());
         user.setPassword(encoder.encode(userRequest.getPassword()));
-        user.setPhoneNumber(number);
+        user.setPhoneNumber(email);
 
-        if (number.equals("996507934333")) {
+        if (email.equals("istanbekbek@gmail.com")) {
             if (isAdminAlreadyLoggedIn()) {
                 throw new RuntimeException("Admin is already logged in");
             } else {

@@ -1,8 +1,10 @@
 package kg.kadyrbekov.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import kg.kadyrbekov.model.entity.Image;
 import lombok.*;
+
+import javax.persistence.Transient;
 
 @Getter
 @Setter
@@ -24,8 +26,11 @@ public class UserDTO {
 
     private int age;
 
-    private String avatar;
+    private String avatarUrl;
 
+    @JsonIgnore
+    @Transient
+    private Image avatar;
 
 
 }

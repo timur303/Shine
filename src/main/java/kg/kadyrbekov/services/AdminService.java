@@ -100,9 +100,9 @@ public class AdminService {
         response.setEmail(user.getEmail());
         response.setId(user.getId());
         if (user.getAvatar() != null) {
-            response.setAvatar(user.getAvatar().getUrl());
+            response.setAvatarUrl(user.getAvatar().getUrl());
         } else {
-            response.setAvatar(null);
+            response.setAvatarUrl(null);
         }
         response.setFirstName(user.getFirstName());
         response.setLastName(user.getLastName());
@@ -117,9 +117,9 @@ public class AdminService {
         response.setEmail(user.getEmail());
         response.setId(user.getId());
         if (user.getAvatar() != null) {
-            response.setAvatar(user.getAvatar().getUrl());
+            response.setAvatarUrl(user.getAvatar().getUrl());
         } else {
-            response.setAvatar(null);
+            response.setAvatarUrl(null);
         }
         response.setFirstName(user.getFirstName());
         response.setLastName(user.getLastName());
