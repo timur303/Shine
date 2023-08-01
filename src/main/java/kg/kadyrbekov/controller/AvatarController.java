@@ -4,14 +4,19 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import kg.kadyrbekov.dto.MessageInvalid;
+import kg.kadyrbekov.dto.UserDTO;
 import kg.kadyrbekov.exception.AvatarException;
 import kg.kadyrbekov.exception.AvatarNotFoundException;
+import kg.kadyrbekov.exception.Error;
 import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.model.User;
 import kg.kadyrbekov.model.entity.Image;
 import kg.kadyrbekov.repositories.ImagesRepository;
 import kg.kadyrbekov.repositories.UserRepository;
+import kg.kadyrbekov.services.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +40,8 @@ import java.util.Map;
         @ApiImplicitParam(name = "Authorization", required = true, value = "", dataType = "string", paramType = "header")
 })
 public class AvatarController {
+
+    private final AdminService adminService;
 
     private final MessageSource messageSource;
     private final UserRepository userRepository;
@@ -119,8 +126,12 @@ public class AvatarController {
         }
     }
 
-    @GetMapping("/getAvatar")
-    public ResponseEntity<?> getAvatar(HttpServletRequest request) {
+    @GetMapping("getUserAvatar/{userId}")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success ", response = UserDTO.class),
+            @ApiResponse(code = 404, message = "User not found ", response = Error.class)
+    })
+    public ResponseEntity<?> getUserByID(HttpServletRequest request, @PathVariable Long userId) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
         Locale locale;
         if (selectedLanguage != null) {
@@ -130,26 +141,12 @@ public class AvatarController {
         }
 
         try {
-            User user = getAuthenticatedUser();
-
-            if (user.getAvatar() == null) {
-                throw new AvatarNotFoundException("User does not have an avatar.");
-            }
-
-            Image avatar = user.getAvatar();
-            String avatarUrl = avatar.getUrl();
-
-            return ResponseEntity.ok(avatarUrl);
-        } catch (AvatarNotFoundException e) {
-            String message = messageSource.getMessage("avatar.notFound", null, locale);
-            MessageInvalid messageInvalid = new MessageInvalid();
-            messageInvalid.setMessages(message);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageInvalid);
-        } catch (Exception e) {
-            String message = messageSource.getMessage("avatar.failed", null, locale);
-            MessageInvalid messageInvalid = new MessageInvalid();
-            messageInvalid.setMessages(message);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messageInvalid);
+            UserDTO user = adminService.getUserByID(userId);
+            return ResponseEntity.ok(user);
+        } catch (NotFoundException e) {
+            String message = messageSource.getMessage("user.notfound", null, locale);
+            Error error = new Error(message);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
 
