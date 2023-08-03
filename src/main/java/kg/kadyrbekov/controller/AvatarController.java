@@ -8,14 +8,18 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kg.kadyrbekov.dto.MessageInvalid;
 import kg.kadyrbekov.dto.UserDTO;
+import kg.kadyrbekov.dto.UserRequest;
+import kg.kadyrbekov.dto.UserResponse;
 import kg.kadyrbekov.exception.AvatarException;
 import kg.kadyrbekov.exception.Error;
 import kg.kadyrbekov.exception.NotFoundException;
+import kg.kadyrbekov.exception.UserUpdateException;
 import kg.kadyrbekov.model.User;
 import kg.kadyrbekov.model.entity.Image;
 import kg.kadyrbekov.repositories.ImagesRepository;
 import kg.kadyrbekov.repositories.UserRepository;
 import kg.kadyrbekov.services.AdminService;
+import kg.kadyrbekov.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -46,6 +50,8 @@ public class AvatarController {
     private final UserRepository userRepository;
     private final ImagesRepository imageRepository;
     private final Cloudinary cloudinary;
+
+    private final UserService userService;
 
     @PostMapping("/uploadAvatar")
     public ResponseEntity<?> uploadAvatar(HttpServletRequest request, @RequestPart("file") MultipartFile file) {
@@ -125,6 +131,29 @@ public class AvatarController {
         }
     }
 
+
+    @PatchMapping("/updateUser")
+    public ResponseEntity<UserResponse> update(@RequestBody UserRequest request, HttpServletRequest servletRequest) {
+        String selectedLanguage = (String) servletRequest.getSession().getAttribute("language");
+        Locale locale;
+        if (selectedLanguage != null) {
+            locale = new Locale(selectedLanguage);
+        } else {
+            locale = new Locale("ru");
+        }
+
+        try {
+            UserResponse response = userService.updateProfile(request);
+            return ResponseEntity.ok(response);
+        } catch (UserUpdateException e) {
+            String errorMessage = messageSource.getMessage("update.failedUser", null, locale);
+            UserResponse response = new UserResponse();
+            response.setErrorMessage(errorMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+
     @GetMapping("getUserAvatar/{userId}")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Success ", response = UserDTO.class),
@@ -148,6 +177,7 @@ public class AvatarController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
+
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
         List<UserDTO> userDTOs = new ArrayList<>();

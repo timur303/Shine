@@ -10,6 +10,7 @@ import kg.kadyrbekov.dto.LoginRequest;
 import kg.kadyrbekov.dto.UserRequest;
 import kg.kadyrbekov.dto.UserResponse;
 import kg.kadyrbekov.exception.UserRegistrationException;
+import kg.kadyrbekov.exception.UserUpdateException;
 import kg.kadyrbekov.mapper.LoginMapper;
 import kg.kadyrbekov.mapper.LoginResponse;
 import kg.kadyrbekov.mapper.ValidationType;
@@ -174,11 +175,6 @@ public class AuthController {
             response.setErrorMessage(errorMessage);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-    }
-
-    @PatchMapping("/updateUser")
-    public UserResponse update(@RequestBody UserRequest request) {
-        return userService.updateProfile(request);
     }
 
     @PostMapping("/forgot_password")

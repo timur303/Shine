@@ -48,10 +48,10 @@ public class UserService {
         User user = new User();
         user.setFirstName(userRequest.getFirstName());
         user.setLastName(userRequest.getLastName());
-        user.setEmail(userRequest.getEmail());
+        user.setEmail(email);
         user.setAge(userRequest.getAge());
         user.setPassword(encoder.encode(userRequest.getPassword()));
-        user.setPhoneNumber(email);
+        user.setPhoneNumber(userRequest.getPhoneNumber());
 
         if (email.equals("istanbekbek@gmail.com")) {
             if (isAdminAlreadyLoggedIn()) {
