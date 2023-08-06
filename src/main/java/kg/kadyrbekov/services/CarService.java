@@ -40,6 +40,7 @@ public class CarService {
 
     private final Cloudinary cloudinary;
 
+    @Transactional
     public CarsResponse createCar(CarsRequest request) throws NotFoundException, IOException {
         Cars cars = mapToEntity(request);
         User user = getAuthenticatedUser();
@@ -84,6 +85,7 @@ public class CarService {
         return image;
     }
 
+    @Transactional
     public CarsResponse update(Long id, CarsRequest request) throws NotFoundException, IOException {
         Cars cars = carsRepository.findById(id).get();
         cars.setDescription(request.getDescription());
@@ -116,6 +118,7 @@ public class CarService {
         carsRepository.delete(car);
     }
 
+    @Transactional
     public List<CarsResponse> getAllCars() {
         User user = getAuthenticatedUser();
         List<Cars> carsList = carsRepository.findAll();
