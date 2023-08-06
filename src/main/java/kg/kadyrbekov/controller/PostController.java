@@ -23,9 +23,9 @@ import java.util.Locale;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/post")
-@ApiImplicitParams({
-        @ApiImplicitParam(name = "Authorization", required = true, dataType = "string", paramType = "header")
-})
+//@ApiImplicitParams({
+//        @ApiImplicitParam(name = "Authorization", required = true, dataType = "string", paramType = "header")
+//})
 public class PostController {
 
     private final MessageSource messageSource;
@@ -123,73 +123,6 @@ public class PostController {
         }
     }
 
-    @PostMapping("/favorites/{carId}")
-    @ApiOperation("Add car to favorites")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Car added to favorites successfully"),
-            @ApiResponse(code = 404, message = "Car or user not found"),
-            @ApiResponse(code = 500, message = "Failed to add car to favorites")
-    })
-    public ResponseEntity<String> addCarToFavorites(HttpServletRequest request, @PathVariable Long carId) {
-        String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale;
-        if (selectedLanguage != null) {
-            locale = new Locale(selectedLanguage);
-        } else {
-            locale = new Locale("ru");
-        }
-
-        try {
-            String messages = messageSource.getMessage("favorite.added", null, locale);
-            userService.addCarToFavorites(carId);
-            return ResponseEntity.ok(messages);
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            String messages = messageSource.getMessage("favorite.add.failed", null, locale);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messages);
-        }
-    }
-
-
-    @DeleteMapping("removeFavorites/{carId}")
-    @ApiOperation("Remove car from favorites")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Car removed from favorites successfully"),
-            @ApiResponse(code = 404, message = "Car or user not found"),
-            @ApiResponse(code = 500, message = "Failed to remove car from favorites")
-    })
-    public ResponseEntity<String> removeCarFromFavorites(HttpServletRequest request, @PathVariable Long carId) {
-        String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale;
-        if (selectedLanguage != null) {
-            locale = new Locale(selectedLanguage);
-        } else {
-            locale = new Locale("ru");
-        }
-
-        try {
-            String messages = messageSource.getMessage("favorite.remove", null, locale);
-            userService.removeCarFromFavorites(carId);
-            return ResponseEntity.ok(messages);
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            String messages = messageSource.getMessage("favorite.remove.failed", null, locale);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messages);
-        }
-    }
-
-
-    @GetMapping("/getAllFavorites")
-    public ResponseEntity<List<Cars>> getFavoriteCars() {
-        List<Cars> favoriteCars = userService.getFavoriteCarsByUser();
-        if (favoriteCars != null) {
-            return new ResponseEntity<>(favoriteCars, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
 
     @DeleteMapping("/cancelLike/{carId}")
     @ApiOperation("Cancel like on a car")
