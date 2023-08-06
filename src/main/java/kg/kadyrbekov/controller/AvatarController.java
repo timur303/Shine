@@ -6,10 +6,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import kg.kadyrbekov.dto.MessageInvalid;
-import kg.kadyrbekov.dto.UserDTO;
-import kg.kadyrbekov.dto.UserRequest;
-import kg.kadyrbekov.dto.UserResponse;
+import kg.kadyrbekov.dto.*;
 import kg.kadyrbekov.exception.AvatarException;
 import kg.kadyrbekov.exception.Error;
 import kg.kadyrbekov.exception.NotFoundException;
@@ -122,6 +119,7 @@ public class AvatarController {
             String messages = messageSource.getMessage("updated.success", null, locale);
             MessageInvalid messageInvalid = new MessageInvalid();
             messageInvalid.setMessages(messages);
+            messageInvalid.setAvatarUrl(newAvatarUrl);
             return ResponseEntity.ok(messageInvalid);
         } catch (IOException | NotFoundException e) {
             String messages = messageSource.getMessage("update.failed", null, locale);
@@ -133,7 +131,7 @@ public class AvatarController {
 
 
     @PatchMapping("/updateUser")
-    public ResponseEntity<UserResponse> update(@RequestBody UserRequest request, HttpServletRequest servletRequest) {
+    public ResponseEntity<UserResponse> update(@RequestBody UpdateUserRequest request, HttpServletRequest servletRequest) {
         String selectedLanguage = (String) servletRequest.getSession().getAttribute("language");
         Locale locale;
         if (selectedLanguage != null) {

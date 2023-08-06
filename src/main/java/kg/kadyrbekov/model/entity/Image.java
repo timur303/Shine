@@ -7,6 +7,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
+
 @Getter
 @Setter
 @Entity
@@ -32,11 +34,11 @@ public class Image {
     @Lob
     private byte[] bytes;
 
-    @OneToOne(cascade = CascadeType.REFRESH)
+    @OneToOne(cascade = {PERSIST,REFRESH,DETACH,MERGE})
     private User user;
 
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = REFRESH, fetch = FetchType.EAGER)
     private Cars cars;
 
 }

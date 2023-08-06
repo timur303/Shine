@@ -1,6 +1,8 @@
 package kg.kadyrbekov.services;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import kg.kadyrbekov.config.jwt.JwtTokenUtil;
+import kg.kadyrbekov.dto.UpdateUserRequest;
 import kg.kadyrbekov.dto.UserRequest;
 import kg.kadyrbekov.dto.UserResponse;
 import kg.kadyrbekov.exception.NotFoundException;
@@ -15,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -76,6 +79,7 @@ public class UserService {
                 .role(user.getRole())
                 .build();
     }
+
 
 
     public User mapToEntity(UserRequest request) {
@@ -155,7 +159,9 @@ public class UserService {
     }
 
 
-    public UserResponse updateProfile(UserRequest updatedUserRequest) {
+    @Transactional
+    @JsonIgnore
+    public UserResponse updateProfile(UpdateUserRequest updatedUserRequest) {
         User existingUser = getAuthenticatedUser();
 
         if (existingUser == null) {
@@ -164,9 +170,9 @@ public class UserService {
 
         existingUser.setFirstName(updatedUserRequest.getFirstName());
         existingUser.setLastName(updatedUserRequest.getLastName());
-        existingUser.setEmail(updatedUserRequest.getEmail());
+//        existingUser.setEmail(updatedUserRequest.getEmail());
         existingUser.setAge(updatedUserRequest.getAge());
-        existingUser.setPhoneNumber(updatedUserRequest.getPhoneNumber());
+//        existingUser.setPhoneNumber(updatedUserRequest.getPhoneNumber());
         existingUser.setAvatarUrl(updatedUserRequest.getAvatarUrl());
         User updatedUser = userRepository.save(existingUser);
 

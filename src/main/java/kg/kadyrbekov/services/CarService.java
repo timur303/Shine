@@ -237,6 +237,124 @@ public class CarService {
 
     }
 
+    public List<CarsResponse> getAllCarsWithout() {
+        List<Cars> carsList = carsRepository.findAll();
+        List<CarsResponse> responseList = new ArrayList<>();
+
+//        if (user != null) {
+//            List<Long> favoriteCarIds = user.getFavoriteCars().stream()
+//                    .map(Cars::getId)
+//                    .collect(Collectors.toList());
+
+        for (Cars cars : carsList) {
+            CarsResponse response = new CarsResponse();
+            response.setId(cars.getId());
+            response.setEngineCapacity(cars.getEngineCapacity());
+            response.setBody(cars.getBody());
+            response.setColor(cars.getColor());
+            response.setBrand(cars.getBrand());
+            response.setAccounting(cars.getAccounting());
+            response.setAvailability(cars.getAvailability());
+            response.setCondition(cars.getCondition());
+            response.setCurrency(cars.getCurrency());
+            response.setDescription(cars.getDescription());
+            response.setYearOfIssue(cars.getYearOfIssue());
+            response.setTransmission(cars.getTransmission());
+            response.setSteeringWheel(cars.getSteeringWheel());
+            response.setPrice(cars.getPrice());
+            response.setModel(cars.getModel());
+            response.setMileage(cars.getMileage());
+            response.setExchange(cars.getExchange());
+            response.setEngine(cars.getEngine());
+            response.setDriveUnit(cars.getDriveUnit());
+            response.setDateOfCreated(LocalDateTime.now());
+            response.setCategory(cars.getCategory());
+            response.setCarsStatus(cars.getCarsStatus());
+            response.setCity(cars.getCity());
+            response.setStateCarNumber(cars.getStateCarNumber());
+//                boolean isFavorite = favoriteCarIds.contains(cars.getId());
+//            response.setFavorites(isFavorite);
+
+
+            if (cars.getImages() != null && !cars.getImages().isEmpty()) {
+                List<String> imageUrls = new ArrayList<>();
+                for (Image image : cars.getImages()) {
+                    imageUrls.add(image.getUrl());
+                }
+                response.setImages(imageUrls);
+            } else {
+                response.setImages(Collections.singletonList("No images available"));
+            }
+
+            responseList.add(response);
+        }
+
+
+        return responseList;
+    }
+
+
+    @Transactional
+    public CarsResponse getByIdCarsWithout(Long id) throws NotFoundException {
+        Cars cars = carsRepository.findById(id).orElseThrow(() ->
+                new NotFoundException("Car with id not found: " + id));
+
+        CarsResponse response = new CarsResponse();
+        response.setId(cars.getId());
+        response.setBody(cars.getBody());
+        response.setColor(cars.getColor());
+        response.setBrand(cars.getBrand());
+        response.setEngineCapacity(cars.getEngineCapacity());
+        response.setAccounting(cars.getAccounting());
+        response.setAvailability(cars.getAvailability());
+        response.setCondition(cars.getCondition());
+        response.setCurrency(cars.getCurrency());
+        response.setDescription(cars.getDescription());
+        response.setYearOfIssue(cars.getYearOfIssue());
+        response.setTransmission(cars.getTransmission());
+        response.setSteeringWheel(cars.getSteeringWheel());
+        response.setPrice(cars.getPrice());
+        response.setModel(cars.getModel());
+        response.setMileage(cars.getMileage());
+        response.setExchange(cars.getExchange());
+        response.setEngine(cars.getEngine());
+        response.setDriveUnit(cars.getDriveUnit());
+        response.setDateOfCreated(LocalDateTime.now());
+        response.setCategory(cars.getCategory());
+        response.setCarsStatus(cars.getCarsStatus());
+        response.setCity(cars.getCity());
+        response.setStateCarNumber(cars.getStateCarNumber());
+        response.setLikes(cars.getLikes());
+//        if (user != null) {
+//            List<Long> favoriteCarIds = user.getFavoriteCars().stream()
+//                    .map(Cars::getId)
+//                    .collect(Collectors.toList());
+
+//        boolean isFavorite = favoriteCarIds.contains(cars.getId());
+//        response.setFavorites(isFavorite);
+
+        if (cars.getImages() != null && !cars.getImages().isEmpty()) {
+            List<String> imageUrls = new ArrayList<>();
+            for (Image image : cars.getImages()) {
+                imageUrls.add(image.getUrl());
+            }
+            response.setImages(imageUrls);
+        } else {
+            response.setImages(Collections.singletonList("No images available"));
+        }
+
+
+        List<String> imageUrls = new ArrayList<>();
+        for (Image image : cars.getImages()) {
+            imageUrls.add(image.getUrl());
+        }
+        response.setImages(Collections.singletonList(String.join(", ", imageUrls)));
+
+
+        return response;
+
+    }
+
 
     public void updateCarStatus(Long carId, CarsStatus status) throws NotFoundException {
         Cars car = carsRepository.findById(carId).orElseThrow(
