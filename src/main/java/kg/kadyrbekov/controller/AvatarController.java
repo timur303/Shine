@@ -139,7 +139,7 @@ public class AvatarController {
         } else {
             locale = new Locale("ru");
         }
-
+//
         try {
             UserResponse response = userService.updateProfile(request);
             return ResponseEntity.ok(response);
