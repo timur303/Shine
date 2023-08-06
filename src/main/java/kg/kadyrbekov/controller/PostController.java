@@ -23,9 +23,9 @@ import java.util.Locale;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/post")
-//@ApiImplicitParams({
-//        @ApiImplicitParam(name = "Authorization", required = true, dataType = "string", paramType = "header")
-//})
+@ApiImplicitParams({
+        @ApiImplicitParam(name = "Authorization", required = true, dataType = "string", paramType = "header")
+})
 public class PostController {
 
     private final MessageSource messageSource;
