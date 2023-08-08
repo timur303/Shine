@@ -92,7 +92,30 @@ public class AdminService {
                 -> new NotFoundException(String.format("User with id not found ", userId)));
     }
 
+public List<UserDTO> getAllUsers() {
+    List<User> userList = userRepository.findAll();
+    List<UserDTO> userDTOList = new ArrayList<>();
 
+    for (User user : userList) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setAge(user.getAge());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setId(user.getId());
+        
+        if (user.getAvatar() != null) {
+            userDTO.setAvatarUrl(user.getAvatar().getUrl());
+        }
+        
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        userDTO.setPhoneNumber(user.getPhoneNumber());
+
+        userDTOList.add(userDTO);
+    }
+
+    return userDTOList;
+}
+    
     public UserDTO getUserByID(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with id not found"));
         UserDTO response = new UserDTO();
