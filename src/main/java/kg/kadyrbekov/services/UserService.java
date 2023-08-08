@@ -167,6 +167,7 @@ public class UserService {
         if (existingUser == null) {
             throw new RuntimeException("User not found.");
         }
+        
 
         existingUser.setFirstName(updatedUserRequest.getFirstName());
         existingUser.setLastName(updatedUserRequest.getLastName());
