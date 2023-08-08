@@ -170,9 +170,9 @@ public class UserService {
 
         existingUser.setFirstName(updatedUserRequest.getFirstName());
         existingUser.setLastName(updatedUserRequest.getLastName());
-//        existingUser.setEmail(updatedUserRequest.getEmail());
+        existingUser.setEmail(updatedUserRequest.getEmail());
         existingUser.setAge(updatedUserRequest.getAge());
-//        existingUser.setPhoneNumber(updatedUserRequest.getPhoneNumber());
+        existingUser.setPhoneNumber(updatedUserRequest.getPhoneNumber());
         existingUser.setAvatarUrl(updatedUserRequest.getAvatarUrl());
         User updatedUser = userRepository.save(existingUser);
 
