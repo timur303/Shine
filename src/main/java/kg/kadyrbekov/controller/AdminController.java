@@ -71,7 +71,13 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
-
+    
+    @GetMapping("/getAllUsers")
+    @ApiOperation(value = "Get all users", notes = "Retrieves a list of all users")
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> users = adminService.getAllUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
 
     @GetMapping("/search")
     public ResponseEntity<Optional<User>> searchUserByEmail(@RequestParam("email") String email) {
