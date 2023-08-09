@@ -167,8 +167,8 @@ public class CarsController {
 
 
     @GetMapping("/getAllFavorites")
-    public ResponseEntity<List<Cars>> getFavoriteCars() {
-        List<Cars> favoriteCars = userService.getFavoriteCarsByUser();
+    public ResponseEntity<List<CarsResponse>> getFavoriteCars() {
+        List<CarsResponse> favoriteCars = userService.getFavoriteCarsByUser();
         if (favoriteCars != null) {
             return new ResponseEntity<>(favoriteCars, HttpStatus.OK);
         } else {

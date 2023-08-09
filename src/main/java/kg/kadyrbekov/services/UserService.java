@@ -2,13 +2,12 @@ package kg.kadyrbekov.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import kg.kadyrbekov.config.jwt.JwtTokenUtil;
-import kg.kadyrbekov.dto.UpdateUserRequest;
-import kg.kadyrbekov.dto.UserRequest;
-import kg.kadyrbekov.dto.UserResponse;
+import kg.kadyrbekov.dto.*;
 import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.exception.UserRegistrationException;
 import kg.kadyrbekov.model.User;
 import kg.kadyrbekov.model.entity.Cars;
+import kg.kadyrbekov.model.entity.Image;
 import kg.kadyrbekov.model.enums.Role;
 import kg.kadyrbekov.repositories.CarsRepository;
 import kg.kadyrbekov.repositories.UserRepository;
@@ -19,8 +18,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -81,7 +84,6 @@ public class UserService {
     }
 
 
-
     public User mapToEntity(UserRequest request) {
 
         Optional<User> existingUserByEmail = userRepository.findByEmail(request.getEmail());
@@ -134,11 +136,65 @@ public class UserService {
         carsRepository.save(car);
     }
 
-    public List<Cars> getFavoriteCarsByUser() {
-        User user = getAuthenticatedUser();
-        return user.getFavoriteCars();
-    }
+    @Transactional
+    public List<CarsResponse> getFavoriteCarsByUser() {
 
+        User user = getAuthenticatedUser();
+        List<Cars> carsList = carsRepository.findAll();
+        List<CarsResponse> responses = new ArrayList<>();
+        if (user != null) {
+            List<Long> favoriteCarIds = user.getFavoriteCars().stream()
+                    .map(Cars::getId)
+                    .collect(Collectors.toList());
+
+            for (Cars cars : carsList) {
+                CarsResponse response = new CarsResponse();
+                response.setId(cars.getId());
+                response.setEngineCapacity(cars.getEngineCapacity());
+                response.setBody(cars.getBody());
+                response.setColor(cars.getColor());
+                response.setBrand(cars.getBrand());
+                response.setAccounting(cars.getAccounting());
+                response.setAvailability(cars.getAvailability());
+                response.setCondition(cars.getCondition());
+                response.setCurrency(cars.getCurrency());
+                response.setDescription(cars.getDescription());
+                response.setYearOfIssue(cars.getYearOfIssue());
+                response.setTransmission(cars.getTransmission());
+                response.setSteeringWheel(cars.getSteeringWheel());
+                response.setPrice(cars.getPrice());
+                response.setModel(cars.getModel());
+                response.setMileage(cars.getMileage());
+                response.setExchange(cars.getExchange());
+                response.setEngine(cars.getEngine());
+                response.setDriveUnit(cars.getDriveUnit());
+                response.setDateOfCreated(LocalDateTime.now());
+                response.setCategory(cars.getCategory());
+                response.setCarsStatus(cars.getCarsStatus());
+                response.setCity(cars.getCity());
+                response.setStateCarNumber(cars.getStateCarNumber());
+                boolean isFavorite = favoriteCarIds.contains(cars.getId());
+                response.setFavorites(isFavorite);
+
+
+                if (cars.getImages() != null && !cars.getImages().isEmpty()) {
+                    List<String> imageUrls = new ArrayList<>();
+                    for (Image image : cars.getImages()) {
+                        imageUrls.add(image.getUrl());
+                    }
+                    response.setImages(imageUrls);
+                } else {
+                    response.setImages(Collections.singletonList("No images available"));
+                }
+
+                responses.add(response);
+
+            }
+
+
+        }
+        return responses;
+    }
 
     public void removeCarFromFavorites(Long carId) throws NotFoundException {
         User user = getAuthenticatedUser();
@@ -167,7 +223,7 @@ public class UserService {
         if (existingUser == null) {
             throw new RuntimeException("User not found.");
         }
-        
+
 
         existingUser.setFirstName(updatedUserRequest.getFirstName());
         existingUser.setLastName(updatedUserRequest.getLastName());

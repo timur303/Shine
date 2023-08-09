@@ -15,9 +15,9 @@ public class UpdateUserRequest {
 
     private int age;
 
-//    private String email;
+    private String email;
 
-//    private String phoneNumber;
+    private String phoneNumber;
 
     private String avatarUrl;
 
