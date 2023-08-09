@@ -3,12 +3,14 @@ package kg.kadyrbekov.services;
 import kg.kadyrbekov.dto.UserDTO;
 import kg.kadyrbekov.dto.UserRequest;
 import kg.kadyrbekov.dto.UserResponse;
+import kg.kadyrbekov.dto.UserResponseGetAll;
 import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.model.User;
 import kg.kadyrbekov.model.enums.Role;
 import kg.kadyrbekov.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -93,19 +95,20 @@ public class AdminService {
                 -> new NotFoundException(String.format("User with id not found ", userId)));
     }
 
-    public List<UserDTO> getAllUsers() {
+    @Transactional
+    public List<UserResponseGetAll> getAllUsers() {
         List<User> userList = userRepository.findAll();
-        List<UserDTO> userDTOList = new ArrayList<>();
+        List<UserResponseGetAll> userDTOList = new ArrayList<>();
 
         for (User user : userList) {
-            UserDTO userDTO = new UserDTO();
+            UserResponseGetAll userDTO = new UserResponseGetAll();
             userDTO.setAge(user.getAge());
             userDTO.setEmail(user.getEmail());
-            userDTO.setId(user.getId());
-
-            if (user.getAvatar() != null) {
-                userDTO.setAvatarUrl(user.getAvatar().getUrl());
-            }
+//            userDTO.setId(user.getId());
+//
+//            if (user.getAvatar() != null) {
+//                userDTO.setAvatarUrl(user.getAvatar().getUrl());
+//            }
 
             userDTO.setFirstName(user.getFirstName());
             userDTO.setLastName(user.getLastName());

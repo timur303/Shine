@@ -3,6 +3,7 @@ package kg.kadyrbekov.controller;
 
 import io.swagger.annotations.*;
 import kg.kadyrbekov.dto.UserDTO;
+import kg.kadyrbekov.dto.UserResponseGetAll;
 import kg.kadyrbekov.exception.Error;
 import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.model.User;
@@ -73,11 +74,11 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
-    
+
     @GetMapping("/getAllUsers")
     @ApiOperation(value = "Get all users", notes = "Retrieves a list of all users")
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users = adminService.getAllUsers();
+    public ResponseEntity<List<UserResponseGetAll>> getAllUsers() {
+        List<UserResponseGetAll> users = adminService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
