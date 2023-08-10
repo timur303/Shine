@@ -45,7 +45,7 @@ public class AdminController {
         userRepository.deleteAll();
     }
 
-
+//
     @DeleteMapping("clearImages")
     public void clears() {
         imagesRepository.deleteAll();
