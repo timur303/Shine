@@ -144,6 +144,7 @@ public class AvatarController {
 //    }
 //
 
+    //
     @PatchMapping("/updateUser")
     public ResponseEntity<UserResponse> update(@RequestBody UpdateUserRequest request, HttpServletRequest servletRequest) {
         String selectedLanguage = (String) servletRequest.getSession().getAttribute("language");
