@@ -43,6 +43,7 @@ public class AdminService {
         return userRepository.findAll();
     }
 
+    @Transactional
     public void givesRoles(String email) {
         User user = userRepository.findByEmail(email).get();
         if (user != null) {

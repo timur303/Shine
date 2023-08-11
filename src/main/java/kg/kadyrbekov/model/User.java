@@ -42,7 +42,7 @@ public class User implements UserDetails {
 
     private int age;
 
-    @OneToOne(cascade = {PERSIST, REFRESH, MERGE, DETACH}, mappedBy = "user")
+    @OneToOne(cascade = {PERSIST, REFRESH, MERGE, DETACH,REMOVE}, mappedBy = "user")
     private Image avatar;
 
     private String phoneNumber;
