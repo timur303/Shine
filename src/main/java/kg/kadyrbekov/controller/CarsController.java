@@ -121,7 +121,7 @@ public class CarsController {
         if (selectedLanguage != null) {
             locale = new Locale(selectedLanguage);
         } else {
-            locale = new Locale("ru");
+            locale = new Locale("en");
         }
 
         try {
@@ -150,7 +150,7 @@ public class CarsController {
         if (selectedLanguage != null) {
             locale = new Locale(selectedLanguage);
         } else {
-            locale = new Locale("ru");
+            locale = new Locale("en");
         }
 
         try {

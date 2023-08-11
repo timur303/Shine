@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,8 +51,9 @@ public class AvatarController {
 
     private final UserService userService;
 
-    @PostMapping("/uploadAvatar")
-    public ResponseEntity<?> uploadAvatar(HttpServletRequest request, @RequestPart("file") MultipartFile file) {
+    @Transactional
+    @PutMapping("/updateAvatar")
+    public ResponseEntity<?> updateAvatar(HttpServletRequest request, @RequestPart("file") MultipartFile file) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
         Locale locale;
         if (selectedLanguage != null) {
@@ -63,26 +65,36 @@ public class AvatarController {
         try {
             User user = getAuthenticatedUser();
 
-            if (user.getAvatar() != null) {
-                throw new AvatarException("User already has an avatar. Cannot set a new one.");
-            }
+            // Get the existing avatar, if any
+            Image existingAvatar = user.getAvatar();
 
             Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
             String avatarUrl = (String) uploadResult.get("secure_url");
 
-            Image image = new Image();
-            image.setName(file.getName());
-            image.setOriginalFileName(file.getOriginalFilename());
-            image.setContentType(file.getContentType());
-            image.setSize(file.getSize());
-            image.setBytes(file.getBytes());
-            image.setUser(user);
-            image.setUrl(avatarUrl);
+            if (existingAvatar != null) {
+                // Update existing avatar properties
+                existingAvatar.setName(file.getName());
+                existingAvatar.setOriginalFileName(file.getOriginalFilename());
+                existingAvatar.setContentType(file.getContentType());
+                existingAvatar.setSize(file.getSize());
+                existingAvatar.setBytes(file.getBytes());
+                existingAvatar.setUrl(avatarUrl);
+            } else {
+                // Create a new Image entity if no avatar exists
+                Image image = new Image();
+                image.setName(file.getName());
+                image.setOriginalFileName(file.getOriginalFilename());
+                image.setContentType(file.getContentType());
+                image.setSize(file.getSize());
+                image.setBytes(file.getBytes());
+                image.setUser(user);
+                image.setUrl(avatarUrl);
 
-            imageRepository.save(image);
+                user.setAvatar(image);
+            }
 
-            user.setAvatar(image);
             userRepository.save(user);
+
             String message = messageSource.getMessage("avatar.upload", null, locale);
             MessageInvalid messageInvalid = new MessageInvalid();
             messageInvalid.setMessages(message);
@@ -96,39 +108,41 @@ public class AvatarController {
         }
     }
 
-    @PatchMapping("/updateAvatar/{avatarId}")
-    public ResponseEntity<?> updateAvatar(HttpServletRequest request, @PathVariable Long avatarId, @RequestPart("file") MultipartFile file) {
-        String selectedLanguage = (String) request.getSession().getAttribute("language");
-        Locale locale;
-        if (selectedLanguage != null) {
-            locale = new Locale(selectedLanguage);
-        } else {
-            locale = new Locale("ru");
-        }
 
-        try {
-            Image image = imageRepository.findById(avatarId)
-                    .orElseThrow(() -> new NotFoundException("Avatar with ID not found"));
 
-            Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-            String newAvatarUrl = (String) uploadResult.get("secure_url");
-
-            image.setBytes(file.getBytes());
-            image.setUrl(newAvatarUrl);
-            imageRepository.save(image);
-            String messages = messageSource.getMessage("updated.success", null, locale);
-            MessageInvalid messageInvalid = new MessageInvalid();
-            messageInvalid.setMessages(messages);
-            messageInvalid.setAvatarUrl(newAvatarUrl);
-            return ResponseEntity.ok(messageInvalid);
-        } catch (IOException | NotFoundException e) {
-            String messages = messageSource.getMessage("update.failed", null, locale);
-            MessageInvalid messageInvalid = new MessageInvalid();
-            messageInvalid.setMessages(messages);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messageInvalid);
-        }
-    }
-
+//    @PatchMapping("/updateAvatar/{avatarId}")
+//    public ResponseEntity<?> updateAvatar(HttpServletRequest request, @PathVariable Long avatarId, @RequestPart("file") MultipartFile file) {
+//        String selectedLanguage = (String) request.getSession().getAttribute("language");
+//        Locale locale;
+//        if (selectedLanguage != null) {
+//            locale = new Locale(selectedLanguage);
+//        } else {
+//            locale = new Locale("ru");
+//        }
+//
+//        try {
+//            Image image = imageRepository.findById(avatarId)
+//                    .orElseThrow(() -> new NotFoundException("Avatar with ID not found"));
+//
+//            Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+//            String newAvatarUrl = (String) uploadResult.get("secure_url");
+//
+//            image.setBytes(file.getBytes());
+//            image.setUrl(newAvatarUrl);
+//            imageRepository.save(image);
+//            String messages = messageSource.getMessage("updated.success", null, locale);
+//            MessageInvalid messageInvalid = new MessageInvalid();
+//            messageInvalid.setMessages(messages);
+//            messageInvalid.setAvatarUrl(newAvatarUrl);
+//            return ResponseEntity.ok(messageInvalid);
+//        } catch (IOException | NotFoundException e) {
+//            String messages = messageSource.getMessage("update.failed", null, locale);
+//            MessageInvalid messageInvalid = new MessageInvalid();
+//            messageInvalid.setMessages(messages);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messageInvalid);
+//        }
+//    }
+//
 
     @PatchMapping("/updateUser")
     public ResponseEntity<UserResponse> update(@RequestBody UpdateUserRequest request, HttpServletRequest servletRequest) {
@@ -232,6 +246,7 @@ public class AvatarController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(invalid);
         }
     }
+
 
     public User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
