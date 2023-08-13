@@ -12,11 +12,13 @@ import kg.kadyrbekov.model.enums.Role;
 import kg.kadyrbekov.repositories.CarsRepository;
 import kg.kadyrbekov.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -147,7 +149,14 @@ public class UserService {
                     .map(Cars::getId)
                     .collect(Collectors.toList());
 
-            for (Cars cars : carsList) {
+            List<Cars> favoriteCarsList = carsList.stream()
+                    .filter(car -> favoriteCarIds.contains(car.getId()))
+                    .collect(Collectors.toList());
+
+            for (Cars cars : favoriteCarsList) {
+                if (!favoriteCarIds.contains(cars.getId())) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Car not found in favorites");
+                }
                 CarsResponse response = new CarsResponse();
                 response.setId(cars.getId());
                 response.setEngineCapacity(cars.getEngineCapacity());
@@ -176,7 +185,6 @@ public class UserService {
                 boolean isFavorite = favoriteCarIds.contains(cars.getId());
                 response.setFavorites(isFavorite);
 
-
                 if (cars.getImages() != null && !cars.getImages().isEmpty()) {
                     List<String> imageUrls = new ArrayList<>();
                     for (Image image : cars.getImages()) {
@@ -188,10 +196,7 @@ public class UserService {
                 }
 
                 responses.add(response);
-
             }
-
-
         }
         return responses;
     }
@@ -245,18 +250,5 @@ public class UserService {
     private synchronized void setAdminLoggedIn(boolean loggedIn) {
         adminLoggedIn = loggedIn;
     }
-
-
-//    public UserResponse mapToResponses(User user) {
-//        return UserResponse.builder()
-//                .id(user.getId())
-//                .firstName(user.getFirstName())
-//                .lastName(user.getLastName())
-//                .phoneNumber(user.getPhoneNumber())
-//                .age(user.getAge())
-//                .email(user.getEmail())
-//                .password(user.getPassword())
-//                .build();
-//    }
 
 }

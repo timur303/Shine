@@ -169,10 +169,12 @@ public class CarsController {
     @GetMapping("/getAllFavorites")
     public ResponseEntity<List<CarsResponse>> getFavoriteCars() {
         List<CarsResponse> favoriteCars = userService.getFavoriteCarsByUser();
-        if (favoriteCars != null) {
+        if (!favoriteCars.isEmpty()) {
             return new ResponseEntity<>(favoriteCars, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Error error = new Error();
+            error.setReason("в избранное нет машина");
+            return new ResponseEntity(error, HttpStatus.NOT_FOUND);
         }
     }
 
