@@ -2,6 +2,7 @@ package kg.kadyrbekov.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import kg.kadyrbekov.model.entity.Image;
+import kg.kadyrbekov.model.enums.Role;
 import lombok.*;
 
 import javax.persistence.Transient;
@@ -32,5 +33,5 @@ public class UserDTO {
     @Transient
     private Image avatar;
 
-
+    private Role role;
 }

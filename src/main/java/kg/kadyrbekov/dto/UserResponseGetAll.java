@@ -1,5 +1,6 @@
 package kg.kadyrbekov.dto;
 
+import kg.kadyrbekov.model.enums.Role;
 import lombok.*;
 
 @Getter
@@ -22,5 +23,6 @@ public class UserResponseGetAll {
 
     private int age;
 
+    private Role role;
 
 }

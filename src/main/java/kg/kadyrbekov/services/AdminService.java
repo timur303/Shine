@@ -114,7 +114,7 @@ public class AdminService {
             userDTO.setFirstName(user.getFirstName());
             userDTO.setLastName(user.getLastName());
             userDTO.setPhoneNumber(user.getPhoneNumber());
-
+            userDTO.setRole(user.getRole());
             userDTOList.add(userDTO);
         }
 
@@ -135,7 +135,7 @@ public class AdminService {
         response.setFirstName(user.getFirstName());
         response.setLastName(user.getLastName());
         response.setPhoneNumber(user.getPhoneNumber());
-
+        response.setRole(user.getRole());
         return response;
     }
 
@@ -153,7 +153,7 @@ public class AdminService {
         response.setFirstName(user.getFirstName());
         response.setLastName(user.getLastName());
         response.setPhoneNumber(user.getPhoneNumber());
-
+        response.setRole(user.getRole());
         return response;
     }
 }

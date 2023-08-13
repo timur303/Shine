@@ -44,8 +44,8 @@ public class CarImageController {
     private final CarsRepository carsRepository;
 
 
-    @PostMapping("/uploadAvatar")
-    public ResponseEntity<?> uploadAvatar(HttpServletRequest request, @RequestPart("file") MultipartFile file) {
+    @PostMapping("/uploadCarImage")
+    public ResponseEntity<?> uploadCarImage(HttpServletRequest request, @RequestPart("file") MultipartFile file) {
         String selectedLanguage = (String) request.getSession().getAttribute("language");
         Locale locale;
         if (selectedLanguage != null) {
