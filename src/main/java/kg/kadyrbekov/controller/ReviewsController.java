@@ -6,6 +6,7 @@ import kg.kadyrbekov.dto.ReviewResponse;
 import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.services.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,7 @@ public class ReviewsController {
 
     private final ReviewService reviewService;
 
+    @Transactional
     @ApiOperation("Create a new review for a car")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Review created successfully"),
@@ -28,6 +30,7 @@ public class ReviewsController {
         return reviewService.create(request, id);
     }
 
+    @Transactional
     @ApiOperation("Update an existing review")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Review updated successfully"),
@@ -38,6 +41,7 @@ public class ReviewsController {
         return reviewService.update(request, id);
     }
 
+    @Transactional
     @ApiOperation("Delete a review by ID")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Review deleted successfully"),
