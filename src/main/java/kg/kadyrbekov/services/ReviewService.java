@@ -72,6 +72,17 @@ public class ReviewService {
                 -> new NotFoundException(String.format("Review with id not found", id)));
     }
 
+    public ReviewResponse getById(Long id) {
+        Review review = reviewRepository.findById(id).get();
+        ReviewResponse response = new ReviewResponse();
+        response.setId(review.getId());
+        response.setComments(review.getComments());
+        response.setStarRating(review.getStarsRating());
+        response.setCarsID(review.getCar().getId());
+
+        return response;
+    }
+
     public Review mapToEntity(ReviewRequest request) {
         Review review = new Review();
         BeanUtils.copyProperties(request, review);
@@ -89,7 +100,8 @@ public class ReviewService {
         response.setId(review.getId());
         response.setComments(review.getComments());
         response.setStarRating(review.getStarsRating());
-        response.setCarsID(review.getCarID());
+        response.setCarsID(review.getCar() != null ? review.getCar().getId() : null);
+        response.setCarsID(review.getCar().getId());
         return response;
     }
 
@@ -98,7 +110,7 @@ public class ReviewService {
                 .id(review.getId())
                 .starRating(review.getStarsRating())
                 .comments(review.getComments())
-                .carsID(review.getCarID())
+                .carsID(review.getCar().getId())
                 .build();
     }
 

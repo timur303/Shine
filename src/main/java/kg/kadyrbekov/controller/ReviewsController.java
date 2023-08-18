@@ -69,19 +69,12 @@ public class ReviewsController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<?> getReviewById(@PathVariable Long id) {
-        try {
-            Optional<Review> reviewOptional = reviewRepository.findById(id);
-            if (reviewOptional.isPresent()) {
-                Review review = reviewOptional.get();
-                ReviewResponse reviewResponse = new ReviewResponse(review.getId(), review.getStarsRating(), review.getComments(), review.getCarID());
-                return ResponseEntity.ok(reviewResponse);
-            } else {
-                ErrorResponse errorResponse = new ErrorResponse("Entity Not Found", "Review with id " + id + " not found");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-            }
-        } catch (Exception e) {
-            ErrorResponse errorResponse = new ErrorResponse("Internal Server Error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        ReviewResponse reviewResponse = reviewService.getById(id);
+        if (reviewResponse != null) {
+            return ResponseEntity.ok(reviewResponse);
+        } else {
+            ErrorResponse errorResponse = new ErrorResponse("Entity Not Found", "Review with id " + id + " not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
 
