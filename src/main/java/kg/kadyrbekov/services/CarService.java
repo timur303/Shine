@@ -4,10 +4,12 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import kg.kadyrbekov.dto.CarsRequest;
 import kg.kadyrbekov.dto.CarsResponse;
+import kg.kadyrbekov.dto.ReviewResponse;
 import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.model.User;
 import kg.kadyrbekov.model.entity.Cars;
 import kg.kadyrbekov.model.entity.Image;
+import kg.kadyrbekov.model.entity.Review;
 import kg.kadyrbekov.model.entity.Url;
 import kg.kadyrbekov.model.enums.CarsStatus;
 import kg.kadyrbekov.repositories.CarsRepository;
@@ -158,6 +160,20 @@ public class CarService {
                 boolean isFavorite = favoriteCarIds.contains(cars.getId());
                 response.setFavorites(isFavorite);
 
+                List<Review> carReviews = cars.getReviews();
+                List<ReviewResponse> reviewResponses = new ArrayList<>();
+
+                for (Review review : carReviews) {
+                    ReviewResponse reviewResponse = new ReviewResponse();
+                    reviewResponse.setId(review.getId());
+                    reviewResponse.setComments(review.getComments());
+                    reviewResponse.setStarRating(review.getStarsRating());
+
+                    reviewResponses.add(reviewResponse);
+                }
+
+                response.setReviewResponse(reviewResponses);
+
 
                 if (cars.getImages() != null && !cars.getImages().isEmpty()) {
                     List<String> imageUrls = new ArrayList<>();
@@ -227,6 +243,22 @@ public class CarService {
             } else {
                 response.setImages(Collections.singletonList("No images available"));
             }
+
+
+            List<Review> carReviews = cars.getReviews();
+            List<ReviewResponse> reviewResponses = new ArrayList<>();
+
+            for (Review review : carReviews) {
+                ReviewResponse reviewResponse = new ReviewResponse();
+                reviewResponse.setId(review.getId());
+                reviewResponse.setComments(review.getComments());
+                reviewResponse.setStarRating(review.getStarsRating());
+                reviewResponse.setCarsID(review.getCar().getId());
+                reviewResponses.add(reviewResponse);
+            }
+
+            response.setReviewResponse(reviewResponses);
+
 
 
             List<String> imageUrls = new ArrayList<>();

@@ -100,6 +100,7 @@ public class CarsResponse {
         this.error = error;
     }
 
+    private List<ReviewResponse> reviewResponse;
 
 
 }
