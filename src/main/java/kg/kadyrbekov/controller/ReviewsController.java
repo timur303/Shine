@@ -3,11 +3,18 @@ package kg.kadyrbekov.controller;
 import io.swagger.annotations.*;
 import kg.kadyrbekov.dto.ReviewRequest;
 import kg.kadyrbekov.dto.ReviewResponse;
+import kg.kadyrbekov.exception.ErrorResponse;
 import kg.kadyrbekov.exception.NotFoundException;
+import kg.kadyrbekov.model.entity.Review;
+import kg.kadyrbekov.repositories.ReviewRepository;
 import kg.kadyrbekov.services.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 public class ReviewsController {
 
     private final ReviewService reviewService;
+
+    private final ReviewRepository reviewRepository;
 
     @Transactional
     @ApiOperation("Create a new review for a car")
@@ -50,5 +59,47 @@ public class ReviewsController {
     @DeleteMapping("carDelete/{id}")
     public void deleteById(@PathVariable Long id) throws NotFoundException {
         reviewService.deleteById(id);
+    }
+
+    @Transactional
+    @ApiOperation("Get review by ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Review deleted successfully"),
+            @ApiResponse(code = 404, message = "Review not found")
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getReviewById(@PathVariable Long id) {
+        try {
+            Optional<Review> reviewOptional = reviewRepository.findById(id);
+            if (reviewOptional.isPresent()) {
+                Review review = reviewOptional.get();
+                ReviewResponse reviewResponse = new ReviewResponse(review.getId(), review.getStarsRating(), review.getComments(), review.getCarID());
+                return ResponseEntity.ok(reviewResponse);
+            } else {
+                ErrorResponse errorResponse = new ErrorResponse("Entity Not Found", "Review with id " + id + " not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
+        } catch (Exception e) {
+            ErrorResponse errorResponse = new ErrorResponse("Internal Server Error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    private static class ErrorResponse {
+        private final String error;
+        private final String message;
+
+        public ErrorResponse(String error, String message) {
+            this.error = error;
+            this.message = message;
+        }
+
+        public String getError() {
+            return error;
+        }
+
+        public String getMessage() {
+            return message;
+        }
     }
 }

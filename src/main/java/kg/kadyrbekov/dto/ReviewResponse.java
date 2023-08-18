@@ -7,7 +7,6 @@ import javax.persistence.Enumerated;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class ReviewResponse {
@@ -21,5 +20,10 @@ public class ReviewResponse {
 
     private Long carsID;
 
-
+    public ReviewResponse(Long id, StarsRating starRating, String comments, Long carsID) {
+        this.id = id;
+        this.starRating = starRating;
+        this.comments = comments;
+        this.carsID = carsID;
+    }
 }
