@@ -12,6 +12,8 @@ import kg.kadyrbekov.model.enums.Role;
 import kg.kadyrbekov.repositories.CarsRepository;
 import kg.kadyrbekov.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

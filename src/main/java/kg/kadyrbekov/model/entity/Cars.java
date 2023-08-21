@@ -92,7 +92,7 @@ public class Cars {
 
     private double price;
 
-    @OneToMany(mappedBy = "car")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "car")
     private List<Review> reviews;
 
     @Column(nullable = false)

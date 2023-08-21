@@ -58,7 +58,7 @@ public class User implements UserDetails {
 
     private String avatarUrl;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(cascade = ALL, mappedBy = "user")
     private List<Review> reviews;
 
     @ElementCollection(targetClass = Role.class)
@@ -68,11 +68,14 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {PERSIST, REFRESH, MERGE})
-    @JoinColumn(name = "favorites")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "users_favorite_cars",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "car_id")
+    )
     @JsonIgnore
     private List<Cars> favoriteCars = new ArrayList<>();
-
 
     @OneToMany(mappedBy = "user")
     private List<UserCarView> userCarViews = new ArrayList<>();
