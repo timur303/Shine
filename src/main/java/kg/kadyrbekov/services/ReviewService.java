@@ -1,9 +1,6 @@
 package kg.kadyrbekov.services;
 
-import kg.kadyrbekov.dto.CarsRequest;
-import kg.kadyrbekov.dto.CarsResponse;
-import kg.kadyrbekov.dto.ReviewRequest;
-import kg.kadyrbekov.dto.ReviewResponse;
+import kg.kadyrbekov.dto.*;
 import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.model.User;
 import kg.kadyrbekov.model.entity.Cars;
@@ -17,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -82,6 +80,32 @@ public class ReviewService {
 
         return response;
     }
+
+
+    public CarsResponseReview getByIdCarsReview(Long id) {
+        Cars cars = carsRepository.findById(id).orElseThrow(() -> new NotFoundException("Car with id not found " + id));
+
+        CarsResponseReview carsResponseReview = new CarsResponseReview();
+        carsResponseReview.setId(cars.getId());
+
+
+        List<Review> carReviews = cars.getReviews();
+        List<ReviewResponse> reviewResponses = new ArrayList<>();
+
+        for (Review review : carReviews) {
+            ReviewResponse reviewResponse = new ReviewResponse();
+            reviewResponse.setId(review.getId());
+            reviewResponse.setComments(review.getComments());
+            reviewResponse.setStarRating(review.getStarsRating());
+            reviewResponse.setCarsID(review.getCar().getId());
+            reviewResponses.add(reviewResponse);
+        }
+
+        carsResponseReview.setReviewResponse(reviewResponses);
+
+        return carsResponseReview;
+    }
+
 
     public Review mapToEntity(ReviewRequest request) {
         Review review = new Review();

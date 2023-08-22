@@ -1,6 +1,7 @@
 package kg.kadyrbekov.controller;
 
 import io.swagger.annotations.*;
+import kg.kadyrbekov.dto.CarsResponseReview;
 import kg.kadyrbekov.dto.ReviewRequest;
 import kg.kadyrbekov.dto.ReviewResponse;
 import kg.kadyrbekov.exception.ErrorResponse;
@@ -67,9 +68,9 @@ public class ReviewsController {
             @ApiResponse(code = 200, message = "Review deleted successfully"),
             @ApiResponse(code = 404, message = "Review not found")
     })
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getReviewById(@PathVariable Long id) {
-        ReviewResponse reviewResponse = reviewService.getById(id);
+    @GetMapping("carReview/{id}")
+    public ResponseEntity<?> getReviewCarId(@PathVariable Long id) {
+        CarsResponseReview reviewResponse = reviewService.getByIdCarsReview(id);
         if (reviewResponse != null) {
             return ResponseEntity.ok(reviewResponse);
         } else {
