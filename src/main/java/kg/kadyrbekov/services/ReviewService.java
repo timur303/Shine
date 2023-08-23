@@ -98,6 +98,7 @@ public class ReviewService {
             reviewResponse.setComments(review.getComments());
             reviewResponse.setStarRating(review.getStarsRating());
             reviewResponse.setCarsID(review.getCar().getId());
+            reviewResponse.setUserId(review.getUser().getId());
             reviewResponses.add(reviewResponse);
         }
 

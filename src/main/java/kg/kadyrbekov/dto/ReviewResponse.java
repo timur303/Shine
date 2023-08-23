@@ -1,4 +1,5 @@
 package kg.kadyrbekov.dto;
+
 import kg.kadyrbekov.model.enums.StarsRating;
 import lombok.*;
 
@@ -8,6 +9,7 @@ import javax.persistence.Enumerated;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class ReviewResponse {
 
@@ -19,6 +21,8 @@ public class ReviewResponse {
     private String comments;
 
     private Long carsID;
+
+    private Long userId;
 
     public ReviewResponse(Long id, StarsRating starRating, String comments, Long carsID) {
         this.id = id;
