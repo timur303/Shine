@@ -1,208 +1,159 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create Car</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Reviews</title>
     <style>
-        table,
-        td {
-            border: 1px solid #333;
-            margin-top: 200px;
-            margin-left: auto;
-            margin-right: auto;
-            font-size: 25px;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
         }
-
-        .table {
-            width: 100%;
-            border: none;
+        h1 {
+            color: #333;
             margin-bottom: 20px;
         }
-
-        .table thead th {
-            font-weight: bold;
-            text-align: left;
-            border: none;
-            padding: 10px 15px;
-            background: #3095e8;
-            font-size: 14px;
+        form {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            width: 400px;
         }
-
-        .table thead tr th:first-child {
-            border-radius: 8px 0 0 8px;
-        }
-
-        .table thead tr th:last-child {
-            border-radius: 0 8px 8px 0;
-        }
-
-        .table tbody td {
-            text-align: left;
-            border: none;
-            padding: 10px 15px;
-            font-size: 14px;
-            vertical-align: top;
-        }
-
-        .table tbody tr:nth-child(even) {
-            background: #f3f3f3;
-        }
-
-        .table tbody tr td:first-child {
-            border-radius: 8px 0 0 8px;
-        }
-
-        .table tbody tr td:last-child {
-            border-radius: 0 8px 8px 0;
-        }
-
-        thead,
-        tfoot {
-            background-color: dodgerblue;
-            color: #fff;
-        }
-
         label {
+            font-weight: bold;
             display: block;
-            margin-top: 10px;
-            font-size: 20px;
+            margin-bottom: 5px;
         }
-
-        input[type="file"],
         input[type="number"],
-        input[type="text"],
         textarea {
-            border: 1px solid black;
-            padding: 3px;
-            font-size: 14px;
             width: 100%;
-            box-sizing: border-box;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin-bottom: 10px;
         }
-
         button[type="submit"] {
-            display: block;
-            margin-top: 10px;
-            font-size: 20px;
-            height: 40px;
-            width: 80px;
+            background-color: #007bff;
+            color: white;
             border: none;
-            background-color: #43acbe;
+            border-radius: 3px;
+            padding: 10px 15px;
             cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #reviewResult {
+            text-align: center;
+            color: #333;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .star-rating {
+            font-size: 24px;
+            color: #f39c12;
+            display: flex;
+            align-items: center;
+        }
+        .star {
+            display: inline-block;
+            font-size: 28px;
+            color: #ccc;
+            transition: color 0.3s;
+            cursor: pointer;
+            margin-right: 3px;
+        }
+        .star.active {
+            color: #f39c12;
+            animation: pulse 0.5s ease infinite alternate;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.1);
+            }
         }
     </style>
 </head>
-<body bgcolor="DEDEDEFF">
-<button type="button" th:href="@{/}"><a th:href="@{/}">Main</a></button>
-<button style="margin-left: 1px; margin-top: 1px" type="button" class="btn btn-outline-success"
-        th:href="@{/}"><a th:href="@{/teachers}">Teachers</a></button>
-<table class="table">
-    <form action="api/cars/car/create" method="post" enctype="multipart/form-data">
-        <tbody class="table-success">
-        <tr>
-            <td>
-                <label for="file1">File 1:</label>
-                <input type="file" name="file1" id="file1">
-            </td>
-            <td>
-                <label for="file2">File 2:</label>
-                <input type="file" name="file2" id="file2">
-            </td>
-            <td>
-                <label for="file3">File 3:</label>
-                <input type="file" name="file3" id="file3">
-            </td>
-            <td>
-                <label for="file4">File 4:</label>
-                <input type="file" name="file4" id="file4">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="YearOfIssue">Year of Issue:</label>
-                <input type="number" name="YearOfIssue" id="YearOfIssue">
-            </td>
-            <td>
-                <label for="mileage">Mileage:</label>
-                <input type="text" name="mileage" id="mileage">
-            </td>
-            <td>
-                <label for="body">Body:</label>
-                <input type="text" name="body" id="body">
-            </td>
-            <td>
-                <label for="color">Color:</label>
-                <input type="text" name="color" id="color">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="engine">Engine:</label>
-                <input type="text" name="engine" id="engine">
-            </td>
-            <td>
-                <label for="transmission">Transmission:</label>
-                <input type="text" name="transmission" id="transmission">
-            </td>
-            <td>
-                <label for="driveUnit">Drive Unit:</label>
-                <input type="text" name="driveUnit" id="driveUnit">
-            </td>
-            <td>
-                <label for="steeringWheel">Steering Wheel:</label>
-                <input type="text" name="steeringWheel" id="steeringWheel">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="condition">Condition:</label>
-                <input type="text" name="condition" id="condition">
-            </td>
-            <td>
-                <label for="customs">Customs:</label>
-                <input type="text" name="customs" id="customs">
-            </td>
-            <td>
-                <label for="exchange">Exchange:</label>
-                <input type="text" name="exchange" id="exchange">
-            </td>
-            <td>
-                <label for="availability">Availability:</label>
-                <input type="text" name="availability" id="availability">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="regionCityOfSale">Region/City of Sale:</label>
-                <input type="text" name="regionCityOfSale" id="regionCityOfSale">
-            </td>
-            <td>
-                <label for="accounting">Accounting:</label>
-                <input type="text" name="accounting" id="accounting">
-            </td>
-            <td>
-                <label for="description">Description:</label>
-                <textarea name="description" id="description"></textarea>
-            </td>
-            <td>
-                <label for="brand">Brand:</label>
-                <input type="text" name="brand" id="brand">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="model">Model:</label>
-                <input type="text" name="model" id="model">
-            </td>
-            <td>
-                <label for="price">Price:</label>
-                <input type="number" name="price" id="price">
-            </td>
-            <td colspan="2">
-                <button type="submit">Submit</button>
-            </td>
-        </tr>
-        </tbody>
-    </form>
-</table>
+<body>
+<h1>Car Reviews</h1>
+
+<h2>Create a Review</h2>
+<form id="createReviewForm">
+    <label for="carId">Car ID:</label>
+    <input type="number" id="carId" name="carId" required><br>
+
+    <label for="reviewText">Review:</label><br>
+    <textarea id="reviewText" name="reviewText" rows="4" cols="50" required></textarea><br>
+
+    <label class="star-rating">Rating:</label>
+    <div class="star-rating">
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
+    </div>
+    <input type="hidden" id="rating" name="rating" value="5">
+
+    <button type="submit">Submit Review</button>
+</form>
+
+<div id="reviewResult"></div>
+
+<script>
+    const createReviewForm = document.getElementById("createReviewForm");
+    const reviewResult = document.getElementById("reviewResult");
+    const stars = createReviewForm.querySelectorAll(".star");
+
+    stars.forEach((star, index) => {
+        star.addEventListener("click", () => {
+            createReviewForm.rating.value = index + 1;
+            updateStars(index);
+        });
+    });
+
+    function updateStars(selectedIndex) {
+        stars.forEach((star, index) => {
+            if (index <= selectedIndex) {
+                star.classList.add("active");
+            } else {
+                star.classList.remove("active");
+            }
+        });
+    }
+
+    createReviewForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const carId = createReviewForm.carId.value;
+        const reviewText = createReviewForm.reviewText.value;
+        const rating = createReviewForm.rating.value;
+
+        const response = await fetch(`/api/review/carWrite/${carId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                // Add your authorization header here
+            },
+            body: JSON.stringify({ reviewText, rating }),
+        });
+
+        const data = await response.json();
+        reviewResult.textContent = "Review created: " + JSON.stringify(data);
+    });
+
+</script>
 </body>
 </html>
