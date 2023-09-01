@@ -5,15 +5,18 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kg.kadyrbekov.dto.CarsResponse;
+import kg.kadyrbekov.dto.CarsResponseReview;
 import kg.kadyrbekov.dto.MessageInvalid;
 import kg.kadyrbekov.exception.NotFoundException;
 import kg.kadyrbekov.model.entity.Cars;
 import kg.kadyrbekov.model.enums.CarsStatus;
 import kg.kadyrbekov.services.CarService;
+import kg.kadyrbekov.services.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +37,7 @@ public class JustController {
 
     private final CarService carsService;
 
+    private final ReviewService reviewService;
 
 
     @GetMapping("/getAllByStatusJust/{status}")
@@ -92,6 +96,41 @@ public class JustController {
             MessageInvalid response = new MessageInvalid();
             response.setMessages(messages);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    @Transactional
+    @ApiOperation("Get review by ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Review deleted successfully"),
+            @ApiResponse(code = 404, message = "Review not found")
+    })
+    @GetMapping("carReview/{id}")
+    public ResponseEntity<?> getReviewCarId(@PathVariable Long id) {
+        CarsResponseReview reviewResponse = reviewService.getByIdCarsReview(id);
+        if (reviewResponse != null) {
+            return ResponseEntity.ok(reviewResponse);
+        } else {
+            ErrorResponse errorResponse = new ErrorResponse("Entity Not Found", "Review with id " + id + " not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
+    }
+
+    private static class ErrorResponse {
+        private final String error;
+        private final String message;
+
+        public ErrorResponse(String error, String message) {
+            this.error = error;
+            this.message = message;
+        }
+
+        public String getError() {
+            return error;
+        }
+
+        public String getMessage() {
+            return message;
         }
     }
 
