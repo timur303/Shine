@@ -127,6 +127,7 @@ public class ReviewService {
         response.setStarRating(review.getStarsRating());
         response.setCarsID(review.getCar() != null ? review.getCar().getId() : null);
         response.setCarsID(review.getCar().getId());
+        response.setUserId(review.getUser().getId());
         return response;
     }
 
