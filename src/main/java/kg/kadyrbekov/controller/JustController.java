@@ -115,7 +115,9 @@ public class JustController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
-//
+
+
+    //
     private static class ErrorResponse {
         private final String error;
         private final String message;
